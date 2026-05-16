@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>feelix – البروفيل الشخصي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="porfile.css">
+<head>
+  
+<body>
+ 
+<div class="bg-aura"></div>
+ 
+<!-- صفحة مش مسجل دخول -->
+<div class="not-logged" id="notLoggedPage" style="display:none">
+  <div style="font-size:48px">🔒</div>
+  <h2>لم تقم بتسجيل الدخول</h2>
+  <p>يجب تسجيل الدخول أولاً للوصول إلى البروفيل الشخصي</p>
+  <a href="logni.html">→ الذهاب لصفحة تسجيل الدخول</a>
+</div>
+ 
+<!-- الصفحة الرئيسية للبروفيل -->
+<div id="profilePage" style="display:none">
+ 
+  <!-- رأس الصفحة -->
+  <div class="top-bar">
+    <div class="logo-text">feelix</div>
+    <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+  </div>
+ 
+  <!-- كفر فوتو -->
+  <div class="cover-wrapper" id="coverWrapper">
+    <img id="coverImg" src="" alt="" style="display:none" class="cover-img">
+    <div class="cover-overlay"></div>
+    <button class="cover-edit-btn" onclick="document.getElementById('coverUpload').click()">
+      🖼️ تغيير صورة الغلاف
+    </button>
+    <input type="file" id="coverUpload" accept="image/*" onchange="uploadCover(event)">
+  </div>
+ 
+  <!-- رأس البروفيل: أفاتار + اسم -->
+  <div class="profile-header">
+    <div class="avatar-ring">
+      <div class="avatar-inner" onclick="document.getElementById('avatarUpload').click()" title="تغيير الصورة الشخصية">
+        <img id="avatarImg" src="" alt="" style="display:none">
+        <div class="avatar-placeholder" id="avatarPlaceholder">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>إضافة</span>
+        </div>
+        <div class="avatar-camera">📷</div>
+      </div>
+    </div>
+    <input type="file" id="avatarUpload" accept="image/*" onchange="uploadAvatar(event)">
+ 
+    <div class="header-info">
+      <div class="doctor-name" id="doctorName">د. —</div>
+      <!-- التخصص الديناميكي -->
+      <div class="doctor-role" id="doctorRoleLabel">متخصص · Feelix Platform</div>
+      <!-- شارة التخصص -->
+      <div id="specialtyBadge" style="display:none; margin-top:6px;">
+        <span class="specialty-badge">
+          <span id="badgeIcon">🩺</span>
+          <span id="badgeText">—</span>
+        </span>
+      </div>
+      <div class="info-chips">
+        <div class="chip">🎂 <span>السن: </span><strong id="chipAge">—</strong></div>
+        <div class="chip">🏥 <span>التخصص: </span><strong id="chipSpec">—</strong></div>
+        <div class="chip">🆔 <span>الدور: </span><strong id="chipRole">—</strong></div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- تاب بار -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('profile',this)">👤 البروفيل</button>
+    <button class="tab-btn" onclick="switchTab('permissions',this)">🔐 الصلاحيات</button>
+    <button class="tab-btn" onclick="switchTab('actions',this)">⚡ الإجراءات</button>
+  </div>
+ 
+  <!-- جسم الصفحة -->
+  <div class="page-body">
+ 
+    <!-- العمود الجانبي -->
+    <div class="sidebar-card">
+      <h3>📝 نبذة عني</h3>
+ 
+      <!-- عرض النبذة -->
+      <div id="bioDisplay">
+        <div class="bio-text" id="bioText">
+          <span class="bio-placeholder">لم تتم إضافة نبذة بعد...</span>
+        </div>
+        <button class="edit-bio-btn" onclick="startEditBio()">✏️ تعديل النبذة</button>
+      </div>
+ 
+      <!-- تعديل النبذة -->
+      <div id="bioEdit" style="display:none">
+        <textarea class="bio-textarea" id="bioTextarea"
+          placeholder="مثلاً: أنا دكتور نفسي متخصص في علاج القلق والاكتئاب، لدي خبرة 10 سنوات في مجال الصحة النفسية..."></textarea>
+        <div class="bio-actions">
+          <button class="save-bio-btn" onclick="saveBio()">💾 حفظ</button>
+          <button class="cancel-bio-btn" onclick="cancelBio()">إلغاء</button>
+        </div>
+      </div>
+ 
+      <div class="divider"></div>
+ 
+      <div class="info-row"><span class="icon">🎂</span><div>العمر: <strong id="sideAge">—</strong></div></div>
+      <div class="info-row"><span class="icon">🏥</span><div>التخصص: <strong id="sideSpec">—</strong></div></div>
+      <div class="info-row"><span class="icon">📅</span><div>تاريخ التسجيل: <strong id="sideRegDate">—</strong></div></div>
+      <div class="info-row"><span class="icon">🕐</span><div>آخر دخول: <strong id="sideLastLogin">—</strong></div></div>
+ 
+      <div class="divider"></div>
+ 
+      <!-- ===== قسم التواصل ===== -->
+      <div class="contact-section">
+        <h3>📞 وسائل التواصل</h3>
+ 
+        <!-- عرض روابط التواصل -->
+        <div id="contactDisplay">
+          <div class="contact-links" id="contactLinks">
+            <div class="contact-empty" id="contactEmpty">لم تتم إضافة وسائل تواصل بعد...</div>
+          </div>
+          <button class="edit-contact-btn" onclick="startEditContact()">✏️ تعديل وسائل التواصل</button>
+        </div>
+ 
+        <!-- نموذج تعديل التواصل -->
+        <div id="contactEdit" class="contact-edit-form">
+          <div class="contact-input-group">
+            <label>واتساب (رقم مع كود الدولة)</label>
+            <input class="contact-input" type="tel" id="inputWhatsapp" placeholder="+201012345678">
+          </div>
+          <div class="contact-input-group">
+            <label>البريد الإلكتروني</label>
+            <input class="contact-input" type="email" id="inputEmail" placeholder="example@email.com">
+          </div>
+          <div class="contact-input-group">
+            <label>لينكدإن (رابط الملف الشخصي)</label>
+            <input class="contact-input" type="url" id="inputLinkedin" placeholder="https://linkedin.com/in/yourname">
+          </div>
+          <div class="contact-input-group">
+            <label>موقع إلكتروني أو رابط آخر</label>
+            <input class="contact-input" type="url" id="inputWebsite" placeholder="https://yourwebsite.com">
+          </div>
+          <div class="bio-actions">
+            <button class="save-bio-btn" onclick="saveContact()">💾 حفظ</button>
+            <button class="cancel-bio-btn" onclick="cancelContact()">إلغاء</button>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- العمود الرئيسي -->
+    <div class="main-col">
+ 
+      <!-- ===== كارت التخصص الجديد ===== -->
+      <div class="specialty-card" id="specialtyCard">
+        <div class="sec-title">نوع التخصص والمجال</div>
+ 
+        <!-- اختيار نوع المتخصص -->
+        <div class="spec-type-grid">
+          <button class="spec-type-btn" id="specBtn-doctor" onclick="selectSpecType('doctor')">
+            <span class="spec-icon">🩺</span>
+            <span>دكتور</span>
+          </button>
+          <button class="spec-type-btn" id="specBtn-specialist" onclick="selectSpecType('specialist')">
+            <span class="spec-icon">🧠</span>
+            <span>مختص</span>
+          </button>
+          <button class="spec-type-btn" id="specBtn-coach" onclick="selectSpecType('coach')">
+            <span class="spec-icon">🌟</span>
+            <span>لايف كوتش</span>
+          </button>
+        </div>
+ 
+        <!-- مجال التخصص -->
+        <input class="spec-field-input" type="text" id="specFieldInput"
+          placeholder="مثال: طب نفسي / علاج سلوكي / تنمية بشرية...">
+ 
+        <button class="save-spec-btn" onclick="saveSpecialty()">✅ حفظ التخصص</button>
+ 
+        <!-- عرض التخصص الحالي -->
+        <div id="currentSpecDisplay" style="display:none; margin-top:14px; padding:12px;
+          background:rgba(29,158,117,0.1); border:1px solid rgba(93,202,165,0.2);
+          border-radius:12px; font-size:13px; color:var(--pale); text-align:center;">
+        </div>
+      </div>
+ 
+      <!-- تاب: البروفيل -->
+      <div id="tab-profile">
+        <div class="card">
+          <div class="section-title-line">معلومات الحساب</div>
+          <div class="dates-grid">
+            <div class="info-box">
+              <div class="label">تاريخ التسجيل</div>
+              <div class="value" id="regDate">—</div>
+            </div>
+            <div class="info-box">
+              <div class="label">آخر دخول</div>
+              <div class="value" id="lastLogin">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- تاب: الصلاحيات -->
+      <div id="tab-permissions" style="display:none">
+        <div class="card">
+          <div class="section-title-line">الصلاحيات الممنوحة</div>
+          <div class="permissions-grid" id="permsGrid"></div>
+        </div>
+      </div>
+ 
+      <!-- تاب: الإجراءات -->
+      <div id="tab-actions" style="display:none">
+        <div class="card">
+          <div class="section-title-line">الإجراءات المتاحة</div>
+          <div class="action-buttons">
+            <button class="btn-primary" id="btnPost" onclick="doAction('post')">✍️ نشر مقال</button>
+            <button class="btn-primary" id="btnSession" onclick="doAction('session')">🎙️ فتح جلسة صوتية</button>
+            <button class="btn-primary" id="btnVideo" onclick="doAction('video')">📹 فتح جلسة مرئية</button>
+            <button class="btn-secondary" onclick="editProfile()">✏️ تعديل البروفيل</button>
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+  </div>
+ 
+</div>
+ 
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+ 
+<script>
+/* ================================================================
+   الصلاحيات المعرّفة مسبقاً مع أيقوناتها
+================================================================ */
+const PERMISSIONS_DEF = [
+  { key: 'canPost',        name: 'نشر مقالات',       icon: '✍️' },
+  { key: 'canOpenSession', name: 'جلسات صوتية',      icon: '🎙️' },
+  { key: 'canVideoCall',   name: 'جلسات مرئية',      icon: '📹' },
+  { key: 'canComment',     name: 'التعليق',           icon: '💬' },
+  { key: 'canReadPosts',   name: 'قراءة المقالات',   icon: '📖' },
+  { key: 'canViewUsers',   name: 'عرض المستفيدين',   icon: '👥' },
+];
+ 
+/* ================================================================
+   تحميل البروفيل من sessionStorage
+================================================================ */
+function loadProfile() {
+  const role = sessionStorage.getItem('role');
+ 
+  if (!role) {
+    document.getElementById('notLoggedPage').style.display = 'flex';
+    return;
+  }
+ 
+  document.getElementById('profilePage').style.display = 'block';
+ 
+  const user    = sessionStorage.getItem('user')           || 'غير محدد';
+  const age     = sessionStorage.getItem('age')            || '—';
+  const spec    = sessionStorage.getItem('specialization') || 'طب نفسي';
+  const regDate = sessionStorage.getItem('regDate')        || formatDate(new Date());
+  const now     = formatDate(new Date());
+ 
+  sessionStorage.setItem('lastLogin', now);
+ 
+  // ملء البيانات
+  document.getElementById('doctorName').textContent    = 'د. ' + user;
+  document.getElementById('chipAge').textContent       = age + ' سنة';
+  document.getElementById('chipSpec').textContent      = spec;
+  document.getElementById('chipRole').textContent      = translateRole(role);
+  document.getElementById('regDate').textContent       = regDate;
+  document.getElementById('lastLogin').textContent     = now;
+  document.getElementById('sideAge').textContent       = age + ' سنة';
+  document.getElementById('sideSpec').textContent      = spec;
+  document.getElementById('sideRegDate').textContent   = regDate;
+  document.getElementById('sideLastLogin').textContent = now;
+ 
+  // ===== تحميل الصورة الشخصية (localStorage - ثابتة) =====
+  const savedAvatar = localStorage.getItem('avatar_' + user);
+  if (savedAvatar) showAvatar(savedAvatar);
+ 
+  // صورة الغلاف
+  const savedCover = localStorage.getItem('cover_' + user);
+  if (savedCover) showCover(savedCover);
+ 
+  // النبذة الشخصية
+  const savedBio = localStorage.getItem('bio_' + user);
+  if (savedBio) {
+    document.getElementById('bioText').textContent  = savedBio;
+    document.getElementById('bioTextarea').value    = savedBio;
+  }
+ 
+  // ===== تحميل التخصص =====
+  const savedSpecType  = localStorage.getItem('specType_' + user);
+  const savedSpecField = localStorage.getItem('specField_' + user);
+  if (savedSpecType) {
+    selectSpecType(savedSpecType, true);
+    if (savedSpecField) {
+      document.getElementById('specFieldInput').value = savedSpecField;
+    }
+    updateSpecDisplay(savedSpecType, savedSpecField || '');
+  }
+ 
+  // ===== تحميل وسائل التواصل =====
+  const savedContact = localStorage.getItem('contact_' + user);
+  if (savedContact) {
+    const contact = JSON.parse(savedContact);
+    document.getElementById('inputWhatsapp').value  = contact.whatsapp  || '';
+    document.getElementById('inputEmail').value     = contact.email     || '';
+    document.getElementById('inputLinkedin').value  = contact.linkedin  || '';
+    document.getElementById('inputWebsite').value   = contact.website   || '';
+    renderContactLinks(contact);
+  }
+ 
+  renderPermissions();
+ 
+  // حالة أزرار الإجراءات
+  document.getElementById('btnPost').disabled    = sessionStorage.getItem('canPost')        !== 'true';
+  document.getElementById('btnSession').disabled = sessionStorage.getItem('canOpenSession') !== 'true';
+  document.getElementById('btnVideo').disabled   = sessionStorage.getItem('canVideoCall')   !== 'true';
+}
+ 
+/* ================================================================
+   رسم بطاقات الصلاحيات
+================================================================ */
+function renderPermissions() {
+  const grid = document.getElementById('permsGrid');
+  grid.innerHTML = '';
+  PERMISSIONS_DEF.forEach(p => {
+    const allowed = sessionStorage.getItem(p.key) === 'true';
+    const card = document.createElement('div');
+    card.className = 'perm-card ' + (allowed ? 'allowed' : 'denied');
+    card.innerHTML = `
+      <div class="perm-icon">${p.icon}</div>
+      <div class="perm-info">
+        <div class="perm-name">${p.name}</div>
+        <div class="perm-status">${allowed ? 'مسموح ✓' : 'غير مسموح'}</div>
+      </div>
+      <div class="perm-check">${allowed ? '✅' : '🔒'}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+ 
+/* ================================================================
+   رفع الصورة الشخصية - تتحفظ في localStorage وتفضل ثابتة
+================================================================ */
+function uploadAvatar(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('❌ يرجى اختيار ملف صورة فقط'); event.target.value=''; return; }
+  if (file.size > 5 * 1024 * 1024)    { showToast('❌ الصورة كبيرة جداً. الحد الأقصى 5 ميجا'); event.target.value=''; return; }
+ 
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    showAvatar(e.target.result);
+    const user = sessionStorage.getItem('user') || 'unknown';
+    localStorage.setItem('avatar_' + user, e.target.result);
+    showToast('✅ تم حفظ الصورة الشخصية — ستظل محفوظة دائماً');
+  };
+  reader.onerror = () => showToast('❌ حدث خطأ أثناء تحميل الصورة');
+  reader.readAsDataURL(file);
+}
+ 
+function showAvatar(src) {
+  document.getElementById('avatarImg').src = src;
+  document.getElementById('avatarImg').style.display = 'block';
+  document.getElementById('avatarPlaceholder').style.display = 'none';
+}
+ 
+/* ================================================================
+   رفع صورة الغلاف
+================================================================ */
+function uploadCover(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('❌ يرجى اختيار ملف صورة فقط'); event.target.value=''; return; }
+  if (file.size > 8 * 1024 * 1024)    { showToast('❌ الصورة كبيرة جداً. الحد الأقصى 8 ميجا'); event.target.value=''; return; }
+ 
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    showCover(e.target.result);
+    localStorage.setItem('cover_' + (sessionStorage.getItem('user')||'unknown'), e.target.result);
+    showToast('✅ تم حفظ صورة الغلاف');
+  };
+  reader.onerror = () => showToast('❌ حدث خطأ أثناء تحميل الغلاف');
+  reader.readAsDataURL(file);
+}
+ 
+function showCover(src) {
+  const img = document.getElementById('coverImg');
+  img.src = src; img.style.display = 'block';
+}
+ 
+/* ================================================================
+   تعديل النبذة الشخصية
+================================================================ */
+function startEditBio() {
+  document.getElementById('bioDisplay').style.display = 'none';
+  document.getElementById('bioEdit').style.display    = 'block';
+  document.getElementById('bioTextarea').focus();
+}
+ 
+function saveBio() {
+  const text  = document.getElementById('bioTextarea').value.trim();
+  const bioEl = document.getElementById('bioText');
+  if (text) {
+    bioEl.textContent = text;
+  } else {
+    bioEl.innerHTML = '<span class="bio-placeholder">لم تتم إضافة نبذة بعد...</span>';
+  }
+  localStorage.setItem('bio_' + (sessionStorage.getItem('user')||'unknown'), text);
+  document.getElementById('bioDisplay').style.display = 'block';
+  document.getElementById('bioEdit').style.display    = 'none';
+  showToast('✅ تم حفظ النبذة الشخصية');
+}
+ 
+function cancelBio() {
+  const user    = sessionStorage.getItem('user') || 'unknown';
+  const saved   = localStorage.getItem('bio_' + user) || '';
+  document.getElementById('bioTextarea').value        = saved;
+  document.getElementById('bioDisplay').style.display = 'block';
+  document.getElementById('bioEdit').style.display    = 'none';
+}
+ 
+/* ================================================================
+   ===== التخصص الجديد =====
+================================================================ */
+let currentSpecType = '';
+ 
+const SPEC_TYPES = {
+  doctor:     { icon: '🩺', label: 'دكتور',      role: 'طبيب متخصص' },
+  specialist: { icon: '🧠', label: 'مختص',       role: 'متخصص' },
+  coach:      { icon: '🌟', label: 'لايف كوتش', role: 'لايف كوتش' },
+};
+ 
+function selectSpecType(type, silent) {
+  currentSpecType = type;
+  // تحديث الأزرار
+  ['doctor','specialist','coach'].forEach(t => {
+    const btn = document.getElementById('specBtn-' + t);
+    if (btn) btn.classList.toggle('selected', t === type);
+  });
+  if (!silent) showToast('✓ اخترت: ' + SPEC_TYPES[type].label);
+}
+ 
+function saveSpecialty() {
+  if (!currentSpecType) { showToast('❌ اختار نوع التخصص أولاً'); return; }
+  const field = document.getElementById('specFieldInput').value.trim();
+  const user  = sessionStorage.getItem('user') || 'unknown';
+ 
+  localStorage.setItem('specType_'  + user, currentSpecType);
+  localStorage.setItem('specField_' + user, field);
+ 
+  updateSpecDisplay(currentSpecType, field);
+  showToast('✅ تم حفظ التخصص بنجاح');
+}
+ 
+function updateSpecDisplay(type, field) {
+  const info = SPEC_TYPES[type];
+  if (!info) return;
+ 
+  // تحديث شارة الهيدر
+  document.getElementById('badgeIcon').textContent    = info.icon;
+  document.getElementById('badgeText').textContent    = info.label + (field ? ' — ' + field : '');
+  document.getElementById('specialtyBadge').style.display = 'block';
+  document.getElementById('doctorRoleLabel').textContent  = info.role + ' · Feelix Platform';
+ 
+  // تحديث chip التخصص
+  document.getElementById('chipSpec').textContent = field || info.label;
+  document.getElementById('sideSpec').textContent  = field || info.label;
+ 
+  // عرض مربع "التخصص الحالي"
+  const display = document.getElementById('currentSpecDisplay');
+  display.style.display = 'block';
+  display.innerHTML = info.icon + ' <strong>' + info.label + '</strong>' + (field ? ' · ' + field : '');
+}
+ 
+/* ================================================================
+   ===== وسائل التواصل =====
+================================================================ */
+function startEditContact() {
+  document.getElementById('contactDisplay').style.display = 'none';
+  document.getElementById('contactEdit').style.display    = 'block';
+}
+ 
+function cancelContact() {
+  document.getElementById('contactDisplay').style.display = 'block';
+  document.getElementById('contactEdit').style.display    = 'none';
+}
+ 
+function saveContact() {
+  const contact = {
+    whatsapp : document.getElementById('inputWhatsapp').value.trim(),
+    email    : document.getElementById('inputEmail').value.trim(),
+    linkedin : document.getElementById('inputLinkedin').value.trim(),
+    website  : document.getElementById('inputWebsite').value.trim(),
+  };
+  const user = sessionStorage.getItem('user') || 'unknown';
+  localStorage.setItem('contact_' + user, JSON.stringify(contact));
+  renderContactLinks(contact);
+  document.getElementById('contactDisplay').style.display = 'block';
+  document.getElementById('contactEdit').style.display    = 'none';
+  showToast('✅ تم حفظ وسائل التواصل');
+}
+ 
+function renderContactLinks(contact) {
+  const container = document.getElementById('contactLinks');
+  const emptyMsg  = document.getElementById('contactEmpty');
+  container.innerHTML = '';
+ 
+  const items = [
+    { key:'whatsapp', icon:'💬', label:'واتساب',  href: contact.whatsapp  ? 'https://wa.me/' + contact.whatsapp.replace(/\D/g,'') : '' },
+    { key:'email',    icon:'📧', label:'إيميل',   href: contact.email     ? 'mailto:' + contact.email    : '' },
+    { key:'linkedin', icon:'💼', label:'لينكدإن', href: contact.linkedin  || '' },
+    { key:'website',  icon:'🌐', label:'الموقع',  href: contact.website   || '' },
+  ];
+ 
+  let hasAny = false;
+  items.forEach(item => {
+    const val = contact[item.key];
+    if (!val) return;
+    hasAny = true;
+    const a = document.createElement('a');
+    a.className  = 'contact-link';
+    a.href       = item.href;
+    a.target     = '_blank';
+    a.rel        = 'noopener noreferrer';
+    a.innerHTML  = `
+      <span class="c-icon">${item.icon}</span>
+      <div>
+        <span class="c-label">${item.label}</span>
+        <span class="c-value">${val}</span>
+      </div>
+    `;
+    container.appendChild(a);
+  });
+ 
+  if (!hasAny) {
+    const empty = document.createElement('div');
+    empty.className = 'contact-empty';
+    empty.textContent = 'لم تتم إضافة وسائل تواصل بعد...';
+    container.appendChild(empty);
+  }
+}
+ 
+/* ================================================================
+   التنقل بين التابات
+================================================================ */
+function switchTab(name, btn) {
+  ['profile','permissions','actions'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+name).style.display = 'block';
+  btn.classList.add('active');
+}
+ 
+/* ================================================================
+   إجراءات الأزرار
+================================================================ */
+function doAction(type) {
+  const map = {
+    post:    { msg:'✍️ جاري فتح محرر المقالات...',   url:'NewPost.html' },
+    session: { msg:'🎙️ جاري إنشاء الجلسة الصوتية...', url:'Session.html' },
+    video:   { msg:'📹 جاري فتح الجلسة المرئية...',   url:'VideoSession.html' },
+  };
+  if (!map[type]) return;
+  showToast(map[type].msg);
+  setTimeout(() => window.location.href = map[type].url, 1000);
+}
+ 
+function editProfile() {
+  showToast('✏️ جاري فتح صفحة التعديل...');
+  setTimeout(() => window.location.href = 'EditProfile.html', 1000);
+}
+ 
+function logout() {
+  showToast('👋 تم تسجيل الخروج بنجاح');
+  setTimeout(() => { sessionStorage.clear(); window.location.href = 'logni.html'; }, 1200);
+}
+ 
+/* ================================================================
+   Toast + مساعدات
+================================================================ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+ 
+function formatDate(d) {
+  return d.toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
+}
+ 
+function translateRole(r) {
+  return { doctor:'طبيب', admin:'مدير', beneficiary:'مستفيد' }[r] || r;
+}
+ 
+/* تشغيل الصفحة */
+loadProfile();
+</script>
+</body>
+</html>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+

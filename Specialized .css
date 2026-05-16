@@ -1,0 +1,365 @@
+        /* ============================================ */
+        /* تعريف المتغيرات (الألوان الرئيسية)          */
+        /* ============================================ */
+        :root {
+            --g-deep:  #085041;   /* أخضر غامق للعناصر الأساسية */
+            --g-mid:   #0F6E56;   /* أخضر متوسط للعناصر الثانوية */
+            --g-main:  #1D9E75;   /* اللون الأخضر الرئيسي للعلامة التجارية */
+            --g-light: #5DCAA5;   /* أخضر فاتح للتفاصيل */
+            --g-pale:  #9FE1CB;   /* أخضر باهت للخلفيات */
+            --g-wash:  #E1F5EE;   /* غسول أخضر فاتح جداً للوجه */
+            --coral:   #F0997B;   /* لون مرجاني للخدود */
+            --pink:    #D4537E;   /* وردي للقلب */
+            --cream:   #F7F5EF;   /* كريمي لخلفية الصفحة */
+
+            /* تدرجات للكرات */
+            --secondary-gradient: radial-gradient(circle at 30% 20%, #1D9E75, #085041);
+            --tertiary-gradient:  radial-gradient(circle at 70% 20%, #F0997B, #D4537E);
+            --primary-gradient:   linear-gradient(135deg, #1D9E75, #0F6E56);
+            --quaternary-gradient: linear-gradient(135deg, #5DCAA5, #1D9E75);
+        }
+
+        /* إعادة تعيين الهوامش والحشو ونموذج الصندوق لجميع العناصر */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* تنسيق جسم الصفحة */
+        body {
+            background: var(--cream);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            direction: rtl;
+        }
+
+        /* حاوية المحتوى الرئيسية */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        /* ========== تنسيق البطاقة (Card) الرئيسية ========== */
+        .card {
+            background: rgba(106, 168, 204, 0.85);
+            border-radius: 30px;
+            padding: 40px 52px 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 40px rgba(29,158,117,.08);
+            animation: fadeUp .7s ease both;
+            transition: transform .4s ease, box-shadow .4s ease;
+            backdrop-filter: blur(6px);
+            width: 100%;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 56px rgba(29,158,117,.14);
+        }
+
+        /* ========== الوجه التعبيري (Face) ========== */
+        .face {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+        .ear {
+            position: absolute;
+            width: 18px;
+            height: 25px;
+            background: var(--g-wash);
+            border: 2px solid var(--g-main);
+            border-radius: 50%;
+            top: 18px;
+            z-index: 0;
+        }
+        .ear.left  { left: 0; }
+        .ear.right { right: 0; }
+        .ear::after {
+            content: '';
+            position: absolute;
+            width: 8px; height: 13px;
+            background: var(--g-pale);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .head {
+            position: absolute;
+            width: 66px; height: 66px;
+            background: var(--g-wash);
+            border: 2.5px solid var(--g-main);
+            border-radius: 50%;
+            top: 7px; left: 7px;
+            z-index: 1;
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50%     { transform: translateY(-5px); }
+        }
+        .heart {
+            position: absolute;
+            top: -6px; right: 6px;
+            width: 14px; height: 14px;
+            z-index: 3;
+            animation: beat 1.6s ease-in-out infinite;
+        }
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            background: var(--pink);
+            width: 8px; height: 12px;
+            border-radius: 8px 8px 0 0;
+        }
+        .heart::before {
+            left: 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+        .heart::after {
+            right: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+        @keyframes beat {
+            0%,100% { transform: scale(1); }
+            40%     { transform: scale(1.35); }
+            60%     { transform: scale(1.1); }
+        }
+        .eyes {
+            position: absolute;
+            top: 20px; left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 16px;
+            z-index: 2;
+        }
+        .eye {
+            width: 15px; height: 8px;
+            border-top: 2.5px solid var(--g-deep);
+            border-radius: 50% 50% 0 0;
+            animation: blink 6s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%,88%,100% { transform: scaleY(1); }
+            92%         { transform: scaleY(.08); }
+        }
+        .smile {
+            position: absolute;
+            bottom: 13px; left: 50%;
+            transform: translateX(-50%);
+            width: 28px; height: 14px;
+            border-bottom: 2.5px solid var(--g-deep);
+            border-radius: 0 0 50% 50%;
+            z-index: 2;
+        }
+        .blush {
+            position: absolute;
+            bottom: 16px;
+            width: 16px; height: 9px;
+            background: var(--coral);
+            border-radius: 50%;
+            opacity: .38;
+            z-index: 2;
+        }
+        .blush.left  { left: 5px; }
+        .blush.right { right: 5px; }
+
+        .wordmark {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--g-deep);
+            letter-spacing: 7px;
+            line-height: 1;
+            transition: color .3s;
+        }
+        .card:hover .wordmark {
+            color: var(--g-main);
+        }
+        .divider {
+            width: 110px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--g-light), transparent);
+        }
+        .tagline {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--g-mid);
+            text-transform: uppercase;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== نموذج تسجيل الدخول ========== */
+        /* جعل الحاوية شفافة تماماً */
+        .logni-row {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);  /* خلفية شفافة بيضاء */
+            backdrop-filter: blur(10px);           /* تأثير زجاجي */
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        /* حقول الإدخال */
+        .logni-row input {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+            outline: none;
+            transition: 0.2s;
+            text-align: right;
+        }
+        .logni-row input:focus {
+            background: white;
+            box-shadow: 0 0 0 2px var(--g-main);
+        }
+        /* زر تسجيل الدخول */
+        .logni-row button {
+            background: var(--primary-gradient);
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .logni-row button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        /* رسالة الخطأ */
+        .error-message {
+            background: #b00020;
+            color: white;
+            padding: 10px;
+            border-radius: 40px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+            margin-top: 10px;
+        }
+
+        /* ========== الكرات الجديدة (Google + Facebook) ========== */
+        .social-circles {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .social-circle-link {
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .social-circle-link:hover {
+            transform: translateY(-8px);
+        }
+        .social-circle-link:active {
+            transform: translateY(-2px) scale(0.96);
+        }
+        .social-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        /* كرة Google */
+        .social-circle.google {
+            background: radial-gradient(circle at 30% 30%, #ffffff, #db4437);
+            border-color: #db4437;
+        }
+        /* كرة Facebook */
+        .social-circle.facebook {
+            background: radial-gradient(circle at 70% 30%, #ffffff, #1877f2);
+            border-color: #1877f2;
+        }
+        /* تأثير hover للكرات (حركة انسيابية وتغيير لون) */
+        .social-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            filter: brightness(1.05);
+        }
+        /* تأثير الخبطة (الضغط) - تغيير اللون بشكل لحظي */
+        .social-circle:active {
+            transform: scale(0.96);
+            filter: brightness(1.2) saturate(1.3);
+            transition: transform 0.05s, filter 0.05s;
+        }
+        .social-icon {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .social-label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 12px;
+            border-radius: 30px;
+        }
+
+        /* استجابة للشاشات الصغيرة */
+        @media (max-width: 480px) {
+            .social-circle {
+                width: 110px;
+                height: 110px;
+            }
+            .social-icon {
+                font-size: 2.5rem;
+            }
+            .social-label {
+                font-size: 0.85rem;
+            }
+            .card {
+                padding: 20px;
+            }
+        }

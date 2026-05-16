@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feelix - اختر دورك</title>
+    <link rel="stylesheet" href="logni.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Playfair+Display:wght@700&family=DM+Sans&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="card">
+            <!-- الوجه التعبيري -->
+            <div class="face">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="head">
+                    <div class="heart"></div>
+                    <div class="eyes">
+                        <div class="eye"></div>
+                        <div class="eye"></div>
+                    </div>
+                    <div class="smile"></div>
+                    <div class="blush left"></div>
+                    <div class="blush right"></div>
+                </div>
+            </div>
+            <div class="wordmark">feelix</div>
+            <div class="tagline">your calm companion</div>
+            <div class="divider"></div>
+
+            <!-- 🔵 اختيار الدور (المستفيدين / المختصين / أصحاب الرعاية) -->
+            <div class="role-selection">
+                <div class="role-option beneficiary" id="role-beneficiary" onclick="window.location.href='Specialized .html'">
+                    <span class="role-label">المستفيدين</span>
+                </div>
+                <div class="role-option specialist" id="role-specialist" onclick="window.location.href='index.html'">
+                    <span class="role-label">المختصين</span>
+                </div>
+                <!-- 🟣 كرة أصحاب الرعاية -->
+                <div class="role-option caregiver" id="role-caregiver" onclick="window.location.href='Beneficiaries.html'">
+                    <span class="role-label">الرعاية</span>
+                    <span class="role-sublabel">أصحاب دور الرعاية</span>
+                </div>
+            </div>
+
+            <!-- 🔵 روابط إضافية -->
+            <div class="footer-links">
+                <a href="#">نسيت كلمة المرور؟</a>
+                <a href="#">إنشاء حساب جديد</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ كود التوجيه التلقائي -->
+    <script>
+        let selectedUserRole = null;
+
+        // تحديد الدور عند الضغط على الدائرة
+        function selectRole(role) {
+            selectedUserRole = role;
+            document.querySelectorAll('.role-option').forEach(el => {
+                el.style.outline = 'none';
+                el.style.transform = '';
+            });
+            const activeEl = document.getElementById(`role-${role}`);
+            activeEl.style.outline = '3px solid var(--g-deep)';
+            activeEl.style.transform = 'scale(1.05)';
+        }
+    </script>
+</body>
+</html>

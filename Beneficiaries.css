@@ -1,0 +1,350 @@
+  /* ============================================ */
+        /* تعريف المتغيرات (الألوان الرئيسية)          */
+        /* ============================================ */
+        :root {
+            --g-deep:  #085041;   /* أخضر غامق للعناصر الأساسية */
+            --g-mid:   #0F6E56;   /* أخضر متوسط للعناصر الثانوية */
+            --g-main:  #1D9E75;   /* اللون الأخضر الرئيسي للعلامة التجارية */
+            --g-light: #5DCAA5;   /* أخضر فاتح للتفاصيل */
+            --g-pale:  #9FE1CB;   /* أخضر باهت للخلفيات */
+            --g-wash:  #E1F5EE;   /* غسول أخضر فاتح جداً للوجه */
+            --coral:   #F0997B;   /* لون مرجاني للخدود */
+            --pink:    #D4537E;   /* وردي للقلب */
+            --cream:   #F7F5EF;   /* كريمي لخلفية الصفحة */
+        }
+
+        /* إعادة تعيين الهوامش والحشو ونموذج الصندوق لجميع العناصر */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* تنسيق جسم الصفحة */
+       /* تنسيق جسم الصفحة */
+body {
+    background: var(--cream);
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    justify-items: center;
+    font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+    padding: 1rem 1rem;
+}
+
+/* باقي القواعد كما هي دون تغيير (بدءًا من .card) */
+
+        /* ========== تنسيق البطاقة (Card) التي تحتوي على الوجه والشعار ========== */
+        .card {
+            background: #6aa8cc;               /* لون خلفية البطاقة أزرق فاتح */
+            border-radius: 24px;               /* زوايا مدورة */
+            padding: 20px 25px;                /* حشوة داخلية */
+            width: 90%;                        /* عرض مرن */
+            max-width: 320px;                  /* أقصى عرض صغير */
+            display: flex;                     /* ترتيب مرن داخلي */
+            flex-direction: column;            /* ترتيب عمودي */
+            align-items: center;               /* توسيط العناصر أفقياً */
+            gap: 16px;                         /* مسافة بين العناصر الداخلية */
+            box-shadow: 0 4px 40px rgba(29,158,117,.08); /* ظل خفيف بلون أخضر */
+            animation: fadeUp .7s ease both;   /* حركة ظهور من الأسفل */
+            transition: transform .4s ease, box-shadow .4s ease; /* تأثير سلس */
+            margin-bottom: 2rem;               /* مسافة أسفل البطاقة (تفصلها عن النموذج) */
+        }
+
+        /* تأثير تمرير الماوس على البطاقة */
+        .card:hover {
+            transform: translateY(-6px);        /* رفع البطاقة قليلاً للأعلى */
+            box-shadow: 0 16px 56px rgba(29,158,117,.14); /* تكبير الظل */
+        }
+
+        /* ========== الوجه التعبيري (Face) ========== */
+        .face {
+            width: 80px;                       /* عرض الوجه */
+            height: 80px;                      /* ارتفاع الوجه */
+            position: relative;                /* لتحديد المواضع المطلقة داخله */
+        }
+
+        /* الأذنين */
+        .ear {
+            position: absolute;                /* موضع مطلق بالنسبة للوجه */
+            width: 18px;                       /* عرض الأذن */
+            height: 25px;                      /* ارتفاع الأذن */
+            background: var(--g-wash);         /* لون خلفية الأذن */
+            border: 2px solid var(--g-main);   /* إطار أخضر */
+            border-radius: 50%;                /* شكل دائري */
+            top: 18px;                         /* المسافة من أعلى الوجه */
+            z-index: 0;                        /* طبقة خلف الرأس */
+        }
+        .ear.left  { left: 0; }                /* الأذن اليسرى */
+        .ear.right { right: 0; }               /* الأذن اليمنى */
+        /* الجزء الداخلي للأذن */
+        .ear::after {
+            content: '';                       /* عنصر فارغ للزخرفة */
+            position: absolute;                /* موضع مطلق داخل الأذن */
+            width: 8px; height: 13px;          /* حجم صغير */
+            background: var(--g-pale);         /* لون أخضر باهت */
+            border-radius: 50%;                /* شكل دائري */
+            top: 50%; left: 50%;               /* توسيط */
+            transform: translate(-50%,-50%);    /* ضبط التوسيط */
+        }
+
+        /* الرأس */
+        .head {
+            position: absolute;                /* موضع مطلق داخل الوجه */
+            width: 66px; height: 66px;         /* حجم الرأس أصغر قليلاً من الوجه */
+            background: var(--g-wash);         /* لون خلفية الرأس */
+            border: 2.5px solid var(--g-main); /* إطار أخضر */
+            border-radius: 50%;                /* شكل دائري */
+            top: 7px; left: 7px;               /* إزاحة قليلة للداخل */
+            z-index: 1;                        /* طبقة فوق الأذنين */
+            animation: float 5s ease-in-out infinite; /* حركة عائمة مستمرة */
+        }
+
+        /* حركة العوم (طفو) */
+        @keyframes float {
+            0%,100% { transform: translateY(0); }   /* البداية والنهاية في نفس المستوى */
+            50%      { transform: translateY(-5px); } /* المنتصف يرتفع قليلاً */
+        }
+
+        /* القلب (اختياري، موجود في الـ HTML الأصلي) */
+        .heart {
+            position: absolute;
+            top: -6px; right: 6px;
+            width: 14px; height: 14px;
+            z-index: 3;
+            animation: beat 1.6s ease-in-out infinite;
+        }
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            background: var(--pink);
+            width: 8px; height: 12px;
+            border-radius: 8px 8px 0 0;
+        }
+        .heart::before { left:0;  transform: rotate(-45deg); transform-origin: 0 100%; }
+        .heart::after  { right:0; transform: rotate(45deg);  transform-origin: 100% 100%; }
+        @keyframes beat {
+            0%,100% { transform: scale(1); }
+            40%      { transform: scale(1.35); }
+            60%      { transform: scale(1.1); }
+        }
+
+        /* العيون */
+        .eyes {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+        .eye {
+            width: 15px; height: 8px;
+            border-top: 2.5px solid var(--g-deep);
+            border-radius: 50% 50% 0 0;
+            animation: blink 6s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%,88%,100% { transform: scaleY(1); }
+            92%          { transform: scaleY(.08); }
+        }
+
+        /* الابتسامة */
+        .smile {
+            position: absolute;
+            bottom: 13px; left: 50%;
+            transform: translateX(-50%);
+            width: 28px; height: 14px;
+            border-bottom: 2.5px solid var(--g-deep);
+            border-radius: 0 0 50% 50%;
+            z-index: 2;
+        }
+
+        /* الخدود */
+        .blush {
+            position: absolute;
+            bottom: 16px;
+            width: 16px; height: 9px;
+            background: var(--coral);
+            border-radius: 50%;
+            opacity: .38;
+            z-index: 2;
+        }
+        .blush.left  { left: 5px; }
+        .blush.right { right: 5px; }
+
+      /* النص الرئيسي (الشعار النصي) */
+.wordmark {
+    font-family: 'Playfair Display', serif;
+     counter-reset: #000000;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--g-deep);
+    letter-spacing: 7px;
+    line-height: 1;
+    transition: color .3s;
+    text-align: center;    /* توسيط النص أفقياً */
+    margin-top: 0px;      /* مسافة صغيرة من الوجه إلى النص (اختياري) */
+}
+        /* تغيير لون النص عند تمرير الماوس على البطاقة */
+        .card:hover .wordmark {
+            color: var(--g-main);
+        }
+
+        /* الفاصل الزخرفي */
+        .divider {
+            width: 110px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--g-light), transparent);
+        }
+
+        /* النص الصغير أسفل الشعار */
+        .tagline {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--g-mid);
+            text-transform: uppercase;
+        }
+
+        /* حركة الظهور من الأسفل */
+        @keyframes fadeUp {
+            from { opacity:0; transform: translateY(20px); }
+            to   { opacity:1; transform: translateY(0);    }
+        }
+
+        /* ========== نموذج تسجيل الدخول (complex-form) ========== */
+        .complex-form {
+            background: white;                 /* خلفية بيضاء */
+            border-radius: 24px;               /* زوايا مدورة */
+            padding: 2rem;                     /* حشوة داخلية */
+            width: 90%;                        /* عرض مرن */
+            max-width: 500px;                  /* أقصى عرض */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* ظل خفيف */
+            margin-top: 0;                     /* لا مسافة علوية إضافية (البطاقة تفصلها) */
+        }
+
+        /* مجموعة الحقل الواحد */
+        .form-group {
+            margin-bottom: 1.5rem;             /* مسافة سفلية بين الحقول */
+            text-align: right;                 /* محاذاة النص إلى اليمين (لغة عربية) */
+        }
+
+        /* تسمية الحقل */
+        label {
+            display: block;                    /* جعل التسمية تأخذ عرض كامل */
+            font-weight: 600;                  /* خط شبه غامق */
+            color: #085041;                    /* لون أخضر غامق */
+            margin-bottom: 8px;                /* مسافة سفلية */
+            font-size: 0.9rem;                /* حجم الخط مناسب */
+        }
+
+        /* حقول الإدخال (نص، كلمة مرور) */
+        input, .file-area {
+            width: 100%;                       /* عرض كامل */
+            padding: 12px 15px;                /* حشوة داخلية */
+            border: 2px solid #ddd;            /* إطار رمادي فاتح */
+            border-radius: 28px;               /* زوايا مدورة بشكل كبير (شكل كبسولة) */
+            font-size: 16px;                   /* حجم الخط */
+            transition: all 0.3s;              /* تأثير سلس عند التركيز */
+            background: #fff;                  /* خلفية بيضاء */
+        }
+
+        /* تأثير التركيز على الحقول */
+        input:focus {
+            border-color: #1D9E75;             /* تغيير لون الإطار للأخضر */
+            outline: none;                     /* إزالة الإطار الافتراضي */
+            box-shadow: 0 0 0 3px rgba(29,158,117,0.2); /* توهج أخضر خفيف */
+        }
+
+        /* منطقة رفع الملف */
+        .file-area {
+            background: #f9f9f9;               /* خلفية رمادية فاتحة */
+            cursor: pointer;                   /* مؤشر اليد */
+            padding: 10px;                     /* حشوة داخلية أقل */
+        }
+
+        /* حقل رفع الملف الداخلي */
+        .file-area input {
+            display: inline-block;             /* عرض كتلة داخلية */
+            width: auto;                       /* عرض تلقائي */
+            border: none;                      /* إزالة الإطار */
+            padding: 0;                        /* إزالة الحشو */
+        }
+
+        /* سؤال التحقق (خلفية مميزة) */
+        .security-question {
+            background: #f0f7f4;               /* خلفية أخضر فاتح جداً */
+            border-radius: 20px;               /* زوايا مدورة */
+            padding: 0.8rem 1rem;              /* حشوة داخلية */
+            margin-bottom: 1.5rem;             /* مسافة سفلية */
+        }
+
+        /* رسالة الخطأ */
+        .error-message {
+            color: #d32f2f;                    /* لون أحمر غامق */
+            background: #ffebee;               /* خلفية حمراء فاتحة */
+            border-radius: 30px;               /* زوايا مدورة */
+            padding: 10px;                     /* حشوة داخلية */
+            font-size: 14px;                   /* حجم خط صغير */
+            margin-top: 10px;                  /* مسافة علوية */
+            text-align: center;                /* توسيط النص */
+            display: none;                     /* مخفي افتراضياً */
+        }
+
+        /* زر تسجيل الدخول */
+        button {
+            width: 100%;                       /* عرض كامل */
+            background: #1D9E75;               /* لون خلفية أخضر */
+            color: white;                      /* لون النص أبيض */
+            border: none;                      /* إزالة الإطار */
+            padding: 14px;                     /* حشوة داخلية */
+            border-radius: 40px;               /* زوايا مدورة جداً (شكل كبسولة) */
+            font-size: 18px;                   /* حجم الخط */
+            font-weight: bold;                 /* خط غامق */
+            cursor: pointer;                   /* مؤشر اليد */
+            transition: 0.2s;                  /* تأثير سلس */
+            margin-top: 10px;                  /* مسافة علوية */
+        }
+
+        /* تأثير التمرير على الزر */
+        button:hover {
+            background: #0F6E56;               /* لون أخضر أغمق */
+            transform: scale(1.02);            /* تكبير بسيط */
+        }
+
+        /* روابط إضافية (نسيت كلمة المرور، دعم فني) */
+        .links {
+            margin-top: 20px;                  /* مسافة علوية */
+            display: flex;                     /* ترتيب مرن أفقي */
+            justify-content: space-between;    /* توزيع متساوٍ بين الروابط */
+        }
+
+        /* الرابط الواحد */
+        .links a {
+            color: #0F6E56;                    /* لون أخضر */
+            text-decoration: none;             /* إزالة الخط التحتي */
+            font-size: 13px;                   /* حجم خط صغير */
+        }
+
+        /* تأثير التمرير على الرابط */
+        .links a:hover {
+            text-decoration: underline;        /* إظهار خط تحتي */
+        }
+
+        /* خط فاصل */
+        hr {
+            margin: 20px 0;                    /* هوامش علوية وسفلية */
+            border-color: #ffffff;             /* لون الخط أخضر فاتح */
+        }
+
+        /* استجابة للشاشات الصغيرة (عرض أقل من 550 بكسل) */
+        @media (max-width: 550px) {
+            .complex-form {
+                padding: 1.5rem;               /* تقليل الحشوة الداخلية */
+            }
+        }

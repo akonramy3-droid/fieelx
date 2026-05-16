@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destination - Feelix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="Destination.css">
+</head>
+
+<body>
+
+    <!-- ============================== -->
+    <!-- شريط ترحيب المختص (يظهر فقط للمختصين) -->
+    <!-- ============================== -->
+    <div id="specialistBar" style="display:none; grid-column: 1 / -1;">
+        <div style="background: linear-gradient(135deg, var(--g-deep), var(--g-main)); border-radius: 20px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; box-shadow: 0 4px 20px rgba(8,80,65,0.25); animation: fadeUp 0.5s ease both;">
+            <div style="display:flex; align-items:center; gap: 12px;">
+                <div id="specialistBarIcon" style="font-size: 28px;"></div>
+                <div>
+                    <div id="specialistBarName" style="font-size: 15px; font-weight: 800; color: white;"></div>
+                    <div id="specialistBarRole" style="font-size: 11px; color: var(--g-pale); letter-spacing: 1px;"></div>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center; gap: 8px;">
+                <div style="background: rgba(255,255,255,0.15); border-radius: 12px; padding: 6px 14px; font-size: 12px; color: white;">✅ دخلت كمختص موثق</div>
+                <button onclick="logoutSpecialist()" style="background: rgba(240,153,123,0.3); border: 1px solid var(--coral); border-radius: 12px; padding: 6px 14px; font-size: 12px; color: white; cursor: pointer; font-family: 'Cairo', sans-serif; transition: all 0.2s;" onmouseover="this.style.background='rgba(240,153,123,0.5)'" onmouseout="this.style.background='rgba(240,153,123,0.3)'">تسجيل خروج</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة نشر مقال (للمختصين) -->
+    <div id="articleModal" style="display:none; position:fixed; inset:0; background:rgba(8,80,65,0.7); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:white; border-radius:28px; padding:2rem; width:100%; max-width:520px; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation: fadeUp 0.4s ease both;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+                <h3 style="font-size:18px; font-weight:800; color:var(--g-deep);">📝 نشر مقال جديد</h3>
+                <button onclick="closeArticleModal()" style="background:none; border:none; font-size:22px; cursor:pointer; color:#999; transition:color 0.2s;" onmouseover="this.style.color='var(--coral)'" onmouseout="this.style.color='#999'">✕</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <input id="articleTitle" type="text" placeholder="عنوان المقال..." style="width:100%; padding:12px 16px; border:1.5px solid #e8e8e8; border-radius:16px; font-size:14px; font-family:'Cairo',sans-serif; outline:none; background:#fafafa;" onfocus="this.style.borderColor='var(--g-light)'" onblur="this.style.borderColor='#e8e8e8'">
+                <textarea id="articleExcerpt" rows="2" placeholder="ملخص قصير للمقال..." style="width:100%; padding:12px 16px; border:1.5px solid #e8e8e8; border-radius:16px; font-size:14px; font-family:'Cairo',sans-serif; outline:none; background:#fafafa; resize:vertical;" onfocus="this.style.borderColor='var(--g-light)'" onblur="this.style.borderColor='#e8e8e8'"></textarea>
+                <div id="articleModalError" style="display:none; background:#fef2f2; color:#dc2626; border-radius:12px; padding:10px 14px; font-size:13px;"></div>
+                <button onclick="submitArticle()" style="background:linear-gradient(135deg,var(--g-main),var(--g-light)); border:none; border-radius:16px; padding:12px; color:white; font-size:15px; font-weight:800; cursor:pointer; font-family:'Cairo',sans-serif; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">نشر المقال ✅</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إنشاء غرفة (للمختصين) -->
+    <div id="roomModal" style="display:none; position:fixed; inset:0; background:rgba(8,80,65,0.7); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:white; border-radius:28px; padding:2rem; width:100%; max-width:480px; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation: fadeUp 0.4s ease both;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+                <h3 style="font-size:18px; font-weight:800; color:var(--g-deep);">🎙️ إنشاء غرفة جديدة</h3>
+                <button onclick="closeRoomModal()" style="background:none; border:none; font-size:22px; cursor:pointer; color:#999;" onmouseover="this.style.color='var(--coral)'" onmouseout="this.style.color='#999'">✕</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <input id="roomName" type="text" placeholder="اسم الغرفة..." style="width:100%; padding:12px 16px; border:1.5px solid #e8e8e8; border-radius:16px; font-size:14px; font-family:'Cairo',sans-serif; outline:none; background:#fafafa;" onfocus="this.style.borderColor='var(--g-light)'" onblur="this.style.borderColor='#e8e8e8'">
+                <div style="display:flex; gap:10px;">
+                    <button onclick="createRoom('voice')" style="flex:1; background:linear-gradient(135deg,var(--g-main),var(--g-light)); border:none; border-radius:14px; padding:12px; color:white; font-size:14px; font-weight:700; cursor:pointer; font-family:'Cairo',sans-serif; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">🎙️ غرفة صوتية</button>
+                    <button onclick="createRoom('video')" style="flex:1; background:linear-gradient(135deg,#2563eb,#60a5fa); border:none; border-radius:14px; padding:12px; color:white; font-size:14px; font-weight:700; cursor:pointer; font-family:'Cairo',sans-serif; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">📹 غرفة مرئية</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ======================== نافذة الغرفة التفاعلية الكاملة ======================== -->
+    <div id="roomChatModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:10000; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:white; border-radius:28px; width:96%; max-width:900px; max-height:95vh; overflow:hidden; display:flex; flex-direction:column; direction:rtl; box-shadow:0 30px 80px rgba(0,0,0,0.4);">
+
+            <!-- رأس الغرفة -->
+            <div style="background:linear-gradient(135deg,var(--g-deep),var(--g-main)); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; border-radius:28px 28px 0 0; flex-shrink:0;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span id="activeRoomIcon" style="font-size:22px;">🎙️</span>
+                    <div>
+                        <div id="activeRoomName" style="font-size:16px; font-weight:800; color:white;"></div>
+                        <div id="activeRoomType" style="font-size:11px; color:var(--g-pale); letter-spacing:1px;"></div>
+                    </div>
+                    <span id="roomLiveBadge" style="background:#ef4444; color:white; font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; animation:pulseRed 1.5s infinite;">● مباشر</span>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <span id="roomParticipantCount" style="background:rgba(255,255,255,0.2); color:white; font-size:12px; padding:4px 12px; border-radius:20px;"></span>
+                    <button onclick="closeRoomChat()" style="background:rgba(240,153,123,0.4); border:1px solid var(--coral); border-radius:12px; padding:6px 14px; font-size:13px; color:white; cursor:pointer; font-family:'Cairo',sans-serif;">إنهاء الجلسة ✕</button>
+                </div>
+            </div>
+
+            <!-- جسم الغرفة -->
+            <div style="display:flex; flex:1; overflow:hidden; min-height:0;">
+
+                <!-- الجانب الأيسر: الفيديو والتحكم -->
+                <div style="flex:1; display:flex; flex-direction:column; padding:1rem; gap:10px; min-width:0;">
+
+                    <!-- منطقة الفيديو -->
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; flex:1;">
+                        <!-- بث المضيف (أنت) -->
+                        <div style="flex:1; min-width:200px; background:#111; border-radius:18px; overflow:hidden; position:relative;">
+                            <video id="localVideo" autoplay muted style="width:100%; height:100%; object-fit:cover; display:block; min-height:140px;"></video>
+                            <div id="localVideoPlaceholder" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#1a1a2e; color:white; gap:8px;">
+                                <div style="font-size:36px;" id="localAvatarIcon">👨‍⚕️</div>
+                                <div style="font-size:13px; font-weight:700;" id="localNameLabel"></div>
+                                <div style="font-size:11px; color:#aaa;">كاميرا مغلقة</div>
+                            </div>
+                            <div style="position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.7); color:white; font-size:11px; padding:3px 10px; border-radius:20px;" id="localMicStatus">🎤 مفتوح</div>
+                            <div style="position:absolute; top:8px; right:8px; background:var(--g-main); color:white; font-size:10px; padding:2px 8px; border-radius:12px; font-weight:700;">أنت (المضيف)</div>
+                        </div>
+                        <!-- المشاركون الآخرون -->
+                        <div id="remoteParticipantsGrid" style="flex:1; min-width:200px; display:flex; flex-wrap:wrap; gap:8px;"></div>
+                    </div>
+
+                    <!-- أدوات التحكم للمضيف -->
+                    <div id="hostControls" style="background:#f8f9fa; border-radius:16px; padding:12px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; flex-shrink:0;">
+                        <button id="btnToggleMic" onclick="toggleMyMic()" style="background:var(--g-main); border:none; border-radius:14px; padding:10px 18px; color:white; font-size:13px; font-weight:700; cursor:pointer; font-family:'Cairo',sans-serif; display:flex; align-items:center; gap:6px; transition:all 0.2s;">
+                            🎤 كتم صوتي
+                        </button>
+                        <button id="btnToggleCam" onclick="toggleMyCam()" style="background:#2563eb; border:none; border-radius:14px; padding:10px 18px; color:white; font-size:13px; font-weight:700; cursor:pointer; font-family:'Cairo',sans-serif; display:flex; align-items:center; gap:6px; transition:all 0.2s;">
+                            📹 إيقاف الكاميرا
+                        </button>
+                        <button onclick="muteAll()" style="background:#d97706; border:none; border-radius:14px; padding:10px 18px; color:white; font-size:13px; font-weight:700; cursor:pointer; font-family:'Cairo',sans-serif; display:flex; align-items:center; gap:6px; transition:all 0.2s;">
+                            🔇 كتم الجميع
+                        </button>
+                        <button onclick="unmuteAll()" style="background:#059669; border:none; border-radius:14px; padding:10px 18px; color:white; font-size:13px; font-weight:700; cursor:pointer; font-family:'Cairo',sans-serif; display:flex; align-items:center; gap:6px; transition:all 0.2s;">
+                            🔊 رفع كتم الجميع
+                        </button>
+                    </div>
+                </div>
+
+                <!-- الجانب الأيمن: المشاركون + الشات -->
+                <div style="width:280px; display:flex; flex-direction:column; border-right:1px solid #eee; flex-shrink:0;">
+
+                    <!-- قائمة المشاركين -->
+                    <div style="padding:12px; border-bottom:1px solid #eee; overflow-y:auto; max-height:55%;">
+                        <div style="font-size:13px; font-weight:800; color:var(--g-deep); margin-bottom:8px;">👥 المشاركون</div>
+                        <div id="participantsList"></div>
+                    </div>
+
+                    <!-- منطقة الشات -->
+                    <div style="flex:1; display:flex; flex-direction:column; min-height:0; padding:10px;">
+                        <div style="font-size:13px; font-weight:800; color:var(--g-deep); margin-bottom:8px;">💬 دردشة الغرفة</div>
+                        <div id="roomChatMessages" style="flex:1; overflow-y:auto; background:#f9f9f9; border-radius:14px; padding:8px; font-size:12px; min-height:80px; max-height:180px;"></div>
+                        <div style="display:flex; gap:6px; margin-top:8px;">
+                            <input type="text" id="roomChatInput" placeholder="اكتب رسالة..." style="flex:1; border-radius:20px; border:1.5px solid var(--g-pale); padding:7px 12px; font-size:13px; font-family:'Cairo',sans-serif; outline:none;">
+                            <button id="roomSendChat" onclick="sendRoomMessage()" style="background:var(--g-main); border:none; border-radius:20px; padding:7px 14px; color:white; font-size:13px; cursor:pointer; font-family:'Cairo',sans-serif;">إرسال</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================== صفحة عرض المقال الكاملة ======================== -->
+    <div id="articleViewPage" style="display:none; position:fixed; inset:0; background:white; z-index:10001; overflow-y:auto; direction:rtl;">
+        <div style="max-width:780px; margin:0 auto; padding:3rem 2rem;">
+            <!-- رأس الصفحة -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:2px solid var(--g-wash);">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:36px; height:36px; background:linear-gradient(135deg,var(--g-main),var(--g-light)); border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; font-family:'Playfair Display',serif; font-weight:700;">f</div>
+                    <span style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--g-deep); letter-spacing:3px;">feelix</span>
+                </div>
+                <button onclick="closeArticleView()" style="background:var(--g-wash); border:none; border-radius:12px; padding:8px 18px; font-size:13px; font-weight:700; color:var(--g-deep); cursor:pointer; font-family:'Cairo',sans-serif; display:flex; align-items:center; gap:6px; transition:all 0.2s;">
+                    ← العودة للصفحة الرئيسية
+                </button>
+            </div>
+
+            <!-- محتوى المقال -->
+            <div id="articleViewContent">
+                <!-- يُملأ ديناميكياً -->
+            </div>
+        </div>
+    </div>
+
+    <div class="right-column">
+        <!-- خانة البحث -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 ابحث في المنشورات...">
+            <button id="searchBtn">بحث</button>
+        </div>
+
+        <!-- قسم المقالات -->
+        <div class="articles-section">
+            <div class="section-header">
+                <div class="section-title">📚 المقالات المنشورة</div>
+                <button class="publish-article-btn" id="publishArticleBtn" disabled title="للمختصين فقط">🔒 نشر مقال</button>
+            </div>
+            <div id="articlesContainer"></div>
+        </div>
+
+        <!-- قسم المختصون -->
+        <div class="specialists-section">
+            <div class="section-header">
+                <div class="section-title">👨‍⚕️ المختصون والكوتش</div>
+            </div>
+            <div id="specialistsContainer"></div>
+        </div>
+    </div>
+
+    <!-- العمود الأوسط: إنشاء منشور + الفيد -->
+    <div class="center-column">
+        <div class="create-post">
+            <div class="create-post-header">
+                <div class="user-avatar-small">😊</div>
+                <span style="font-size:14px;color:#888;font-weight:600;">شاركنا ما تشعر به اليوم...</span>
+            </div>
+            <textarea id="postText" rows="3" placeholder="اكتب شيئاً هنا..."></textarea>
+            <div class="post-actions">
+                <label class="file-label">
+                    📷 رفع صورة
+                    <input type="file" id="postImage" accept="image/*">
+                </label>
+                <button class="post-btn" id="publishBtn">✉️ نشر</button>
+            </div>
+            <img id="postImagePreview" class="image-preview" alt="معاينة الصورة">
+        </div>
+        <div id="feedContainer"></div>
+    </div>
+
+    <!-- العمود الأيسر: الوجه + الغرف -->
+    <div class="left-column">
+        <div class="card">
+            <div class="face">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="head">
+                    <div class="heart"></div>
+                    <div class="eyes">
+                        <div class="eye"></div>
+                        <div class="eye"></div>
+                    </div>
+                    <div class="smile"></div>
+                    <div class="blush left"></div>
+                    <div class="blush right"></div>
+                </div>
+            </div>
+            <div class="wordmark">feelix</div>
+            <div class="divider"></div>
+            <div class="tagline">your calm companion</div>
+        </div>
+
+        <div class="rooms-panel">
+            <h3>🎙️ الغرف الصوتية والمرئية</h3>
+
+            <div class="room-item">
+                <div class="room-info">
+                    <div class="room-name">جلسة الهدوء الصباحي</div>
+                    <div class="room-host">يستضيفها: د. أحمد</div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <span class="badge-live">مباشر</span>
+                    <span class="badge-specialist">مختص</span>
+                    <button onclick="openRoomChat('جلسة الهدوء الصباحي','voice')" id="joinRoomBtn1" style="display:none;background:var(--g-main);border:none;border-radius:12px;padding:4px 12px;color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;">دخول ▶</button>
+                </div>
+            </div>
+
+            <div class="room-item">
+                <div class="room-info">
+                    <div class="room-name">مجموعة دعم القلق</div>
+                    <div class="room-host">يستضيفها: د. سارة</div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <span class="badge-specialist">مختص</span>
+                    <button onclick="openRoomChat('مجموعة دعم القلق','voice')" id="joinRoomBtn2" style="display:none;background:var(--g-main);border:none;border-radius:12px;padding:4px 12px;color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;">دخول ▶</button>
+                </div>
+            </div>
+
+            <div class="room-item">
+                <div class="room-info">
+                    <div class="room-name">كوتشينج يومي</div>
+                    <div class="room-host">يستضيفها: م. نور</div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <span class="badge-live">مباشر</span>
+                    <button onclick="openRoomChat('كوتشينج يومي','video')" id="joinRoomBtn3" style="display:none;background:var(--g-main);border:none;border-radius:12px;padding:4px 12px;color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;">دخول ▶</button>
+                </div>
+            </div>
+
+            <div class="room-lock-msg">
+                🔒 الدخول والتأسيس للمختصين فقط
+            </div>
+
+            <button class="create-room-btn" id="createRoomBtn" disabled>
+                🔒 إنشاء غرفة (للمختصين فقط)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ====================== بيانات المنشورات ======================
+        let posts = [
+            {
+                id: 1,
+                author: "أحمد",
+                date: new Date().toLocaleString('ar-EG'),
+                text: "مرحباً بالجميع، هذا أول منشور تجريبي. 💚",
+                image: null,
+                likes: 0,
+                liked: false,
+                comments: [
+                    { id: 101, text: "منشور رائع!", image: null, author: "سارة" }
+                ]
+            }
+        ];
+        let nextPostId = 2;
+        let nextCommentId = 102;
+
+        // ====================== بيانات المقالات ======================
+        let articles = [
+            {
+                id: 1,
+                title: "كيفية التعامل مع نوبات القلق اليومية",
+                author: "د. أحمد محمد حسن",
+                date: "15 أبريل 2026",
+                excerpt: "تعرف على 7 تقنيات علمية مثبتة للسيطرة على القلق...",
+                reads: 1240
+            },
+            {
+                id: 2,
+                title: "أهمية النوم في الصحة النفسية",
+                author: "د. سارة الخالدي",
+                date: "10 أبريل 2026",
+                excerpt: "كيف يؤثر نقص النوم على المزاج والتركيز...",
+                reads: 980
+            },
+            {
+                id: 3,
+                title: "تقنيات التنفس لتقليل التوتر",
+                author: "م. نور الهدى",
+                date: "5 أبريل 2026",
+                excerpt: "تمارين بسيطة يمكن ممارستها في أي مكان وزمان...",
+                reads: 654
+            }
+        ];
+
+        // ====================== بيانات المختصين ======================
+        let specialists = [
+            {
+                id: 1,
+                name: "د. أحمد محمد حسن",
+                type: "doctor",
+                typeLabel: "دكتور نفسي",
+                specialty: "اضطرابات القلق والاكتئاب",
+                rating: 4.9,
+                reviews: 342,
+                emoji: "👨‍⚕️"
+            },
+            {
+                id: 2,
+                name: "د. سارة الخالدي",
+                type: "therapist",
+                typeLabel: "معالج نفسي",
+                specialty: "علاج الصدمات والاضطرابات ما بعد الصدمة",
+                rating: 4.8,
+                reviews: 289,
+                emoji: "👩‍⚕️"
+            },
+            {
+                id: 3,
+                name: "م. نور الهدى",
+                type: "coach",
+                typeLabel: "لايف كوتش",
+                specialty: "التطوير الذاتي والتحفيز",
+                rating: 4.7,
+                reviews: 215,
+                emoji: "🌟"
+            },
+            {
+                id: 4,
+                name: "د. محمد الشريف",
+                type: "doctor",
+                typeLabel: "دكتور نفسي",
+                specialty: "علاج الاضطرابات السلوكية للأطفال",
+                rating: 4.7,
+                reviews: 156,
+                emoji: "👨‍⚕️"
+            }
+        ];
+
+        // ====================== دالة عرض المقالات ======================
+        function renderArticles() {
+            const container = document.getElementById("articlesContainer");
+            container.innerHTML = "";
+            articles.forEach(article => {
+                const articleDiv = document.createElement("div");
+                articleDiv.className = "article-card";
+                articleDiv.innerHTML = `
+                    <h3>${article.title}</h3>
+                    <p class="article-meta">بقلم: ${article.author} | ${article.date}</p>
+                    <p class="article-excerpt">${article.excerpt}</p>
+                    <div class="article-footer">
+                        <span>👁️ ${article.reads.toLocaleString('ar-EG')}</span>
+                        <button class="read-btn" data-id="${article.id}">اقرأ المقال كاملاً ←</button>
+                    </div>
+                `;
+                // زيادة عداد القراءات عند الضغط
+                articleDiv.querySelector('.read-btn').addEventListener('click', () => {
+                    article.reads++;
+                    openArticleView(article);
+                });
+                container.appendChild(articleDiv);
+            });
+        }
+
+        // ====================== دالة عرض المختصين ======================
+        function renderSpecialists() {
+            const container = document.getElementById("specialistsContainer");
+            container.innerHTML = "";
+            specialists.forEach(doc => {
+                const badgeClass = doc.type === 'doctor' ? 'badge-doctor' : doc.type === 'coach' ? 'badge-coach' : 'badge-therapist';
+                const stars = '⭐'.repeat(Math.floor(doc.rating));
+                const docDiv = document.createElement("div");
+                docDiv.className = "specialist-card";
+                docDiv.innerHTML = `
+                    <div class="specialist-avatar">${doc.emoji}</div>
+                    <span class="specialist-type-badge ${badgeClass}">${doc.typeLabel}</span>
+                    <h4>${doc.name}</h4>
+                    <p class="specialty">${doc.specialty}</p>
+                    <div class="rating">
+                        ${stars} ${doc.rating} <span>(${doc.reviews.toLocaleString('ar-EG')} تقييم)</span>
+                    </div>
+                    <button class="book-session-btn">📅 حجز جلسة استشارية</button>
+                `;
+                container.appendChild(docDiv);
+            });
+        }
+
+        // ====================== دالة عرض الفيد ======================
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str.replace(/[&<>"']/g, function(m) {
+                const map = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+                return map[m];
+            });
+        }
+
+        function renderFeed(filterText = "") {
+            const container = document.getElementById("feedContainer");
+            container.innerHTML = "";
+
+            const filtered = posts.filter(p =>
+                !filterText || p.text.includes(filterText) || p.author.includes(filterText)
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="no-posts">لا توجد منشورات مطابقة 🔍</div>';
+                return;
+            }
+
+            filtered.forEach(post => {
+                const postDiv = document.createElement("div");
+                postDiv.className = "post";
+                postDiv.dataset.id = post.id;
+
+                const commentsHTML = post.comments.map(c => `
+                    <div class="comment" data-cid="${c.id}">
+                        <div class="comment-header">
+                            <span class="comment-author">👤 ${escapeHtml(c.author)}</span>
+                            <div class="comment-actions-menu">
+                                <button class="edit-comment" data-pid="${post.id}" data-cid="${c.id}">✏️</button>
+                                <button class="delete-comment" data-pid="${post.id}" data-cid="${c.id}">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="comment-text">${escapeHtml(c.text)}</div>
+                        ${c.image ? `<img src="${c.image}" class="comment-image" alt="">` : ""}
+                    </div>
+                `).join("");
+
+                postDiv.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-author-info">
+                            <div class="post-avatar"></div>
+                            <div>
+                                <div class="post-author">${escapeHtml(post.author)}</div>
+                                <div class="post-date">${post.date}</div>
+                            </div>
+                        </div>
+                        <div class="post-actions-menu">
+                            <button class="edit-post" data-id="${post.id}">✏️ تعديل</button>
+                            <button class="delete-post" data-id="${post.id}">🗑️ حذف</button>
+                        </div>
+                    </div>
+                    <div class="post-content">${escapeHtml(post.text)}</div>
+                    ${post.image ? `<img src="${post.image}" class="post-image" alt="">` : ""}
+                    <div class="post-stats">
+                        <button class="like-btn ${post.liked ? 'liked' : ''}" data-id="${post.id}">
+                            ${post.liked ? '❤️' : '🤍'} ${post.likes} إعجاب
+                        </button>
+                        <button class="comment-btn" data-id="${post.id}">
+                            💬 ${post.comments.length} تعليق
+                        </button>
+                    </div>
+                    <div class="comments-section" style="display:none;">
+                        <div class="comments-list">${commentsHTML}</div>
+                        <div class="add-comment">
+                            <textarea class="new-comment-text" placeholder="أضف تعليقاً..."></textarea>
+                            <div class="comment-actions">
+                                <label class="comment-file-label">
+                                    📷 صورة
+                                    <input type="file" class="comment-image-file" accept="image/*" style="display:none;">
+                                </label>
+                                <button class="submit-comment" data-id="${post.id}">إرسال</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(postDiv);
+            });
+
+            // Events
+            container.querySelectorAll(".like-btn").forEach(btn => btn.addEventListener("click", handleLike));
+            container.querySelectorAll(".comment-btn").forEach(btn => btn.addEventListener("click", toggleComments));
+            container.querySelectorAll(".submit-comment").forEach(btn => btn.addEventListener("click", handleAddComment));
+            container.querySelectorAll(".edit-post").forEach(btn => btn.addEventListener("click", handleEditPost));
+            container.querySelectorAll(".delete-post").forEach(btn => btn.addEventListener("click", handleDeletePost));
+            container.querySelectorAll(".edit-comment").forEach(btn => btn.addEventListener("click", handleEditComment));
+            container.querySelectorAll(".delete-comment").forEach(btn => btn.addEventListener("click", handleDeleteComment));
+
+            // Image preview for comments
+            container.querySelectorAll(".comment-image-file").forEach(input => {
+                input.addEventListener("change", e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = ev => { input.dataset.preview = ev.target.result; };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+
+        function handleLike(e) {
+            const id = parseInt(e.currentTarget.dataset.id);
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+            post.liked = !post.liked;
+            post.likes += post.liked ? 1 : -1;
+            renderFeed(document.getElementById("searchInput").value);
+        }
+
+        function toggleComments(e) {
+            const id = e.currentTarget.dataset.id;
+            const postDiv = document.querySelector(`.post[data-id="${id}"]`);
+            if (!postDiv) return;
+            const sec = postDiv.querySelector(".comments-section");
+            sec.style.display = sec.style.display === "none" ? "block" : "none";
+        }
+
+        function handleAddComment(e) {
+            const id = parseInt(e.currentTarget.dataset.id);
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+            const postDiv = document.querySelector(`.post[data-id="${id}"]`);
+            const textarea = postDiv.querySelector(".new-comment-text");
+            const imageInput = postDiv.querySelector(".comment-image-file");
+            const text = textarea.value.trim();
+            if (!text && !imageInput.dataset.preview) return;
+            post.comments.push({
+                id: nextCommentId++,
+                text: text,
+                image: imageInput.dataset.preview || null,
+                author: "أنت"
+            });
+            renderFeed(document.getElementById("searchInput").value);
+        }
+
+        function handleEditPost(e) {
+            const id = parseInt(e.currentTarget.dataset.id);
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+            const postDiv = document.querySelector(`.post[data-id="${id}"]`);
+            const contentDiv = postDiv.querySelector(".post-content");
+            contentDiv.innerHTML = `
+                <textarea class="edit-textarea">${post.text}</textarea>
+                <button class="save-edit" data-id="${id}">حفظ</button>
+            `;
+            contentDiv.querySelector(".save-edit").addEventListener("click", () => {
+                post.text = contentDiv.querySelector(".edit-textarea").value;
+                renderFeed(document.getElementById("searchInput").value);
+            });
+        }
+
+        function handleDeletePost(e) {
+            const id = parseInt(e.currentTarget.dataset.id);
+            if (!confirm("هل تريد حذف هذا المنشور؟")) return;
+            posts = posts.filter(p => p.id !== id);
+            renderFeed(document.getElementById("searchInput").value);
+        }
+
+        function handleEditComment(e) {
+            const pid = parseInt(e.currentTarget.dataset.pid);
+            const cid = parseInt(e.currentTarget.dataset.cid);
+            const post = posts.find(p => p.id === pid);
+            if (!post) return;
+            const comment = post.comments.find(c => c.id === cid);
+            if (!comment) return;
+            const commentDiv = document.querySelector(`.comment[data-cid="${cid}"]`);
+            const textDiv = commentDiv.querySelector(".comment-text");
+            textDiv.innerHTML = `
+                <textarea class="edit-textarea">${comment.text}</textarea>
+                <button class="save-edit" data-cid="${cid}" data-pid="${pid}">حفظ</button>
+            `;
+            textDiv.querySelector(".save-edit").addEventListener("click", () => {
+                comment.text = textDiv.querySelector(".edit-textarea").value;
+                renderFeed(document.getElementById("searchInput").value);
+            });
+        }
+
+        function handleDeleteComment(e) {
+            const pid = parseInt(e.currentTarget.dataset.pid);
+            const cid = parseInt(e.currentTarget.dataset.cid);
+            const post = posts.find(p => p.id === pid);
+            if (!post) return;
+            if (!confirm("هل تريد حذف هذا التعليق؟")) return;
+            post.comments = post.comments.filter(c => c.id !== cid);
+            renderFeed(document.getElementById("searchInput").value);
+        }
+
+        function publishPost() {
+            const text = document.getElementById("postText").value.trim();
+            const imageInput = document.getElementById("postImage");
+            const imagePreview = document.getElementById("postImagePreview");
+
+            if (!text && !imagePreview.src) return;
+
+            const newPost = {
+                id: nextPostId++,
+                author: window._specialistName || "أنت",
+                date: new Date().toLocaleString('ar-EG'),
+                text: text,
+                image: imagePreview.style.display === "block" ? imagePreview.src : null,
+                likes: 0,
+                liked: false,
+                comments: []
+            };
+
+            posts.unshift(newPost);
+            document.getElementById("postText").value = "";
+            imagePreview.src = "";
+            imagePreview.style.display = "none";
+            imageInput.value = "";
+            renderFeed("");
+        }
+
+        // Image preview for new post
+        document.getElementById("postImage").addEventListener("change", function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const preview = document.getElementById("postImagePreview");
+                preview.src = ev.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById("publishBtn").addEventListener("click", publishPost);
+        document.getElementById("searchBtn").addEventListener("click", () => {
+            renderFeed(document.getElementById("searchInput").value);
+        });
+        document.getElementById("searchInput").addEventListener("keyup", (e) => {
+            if (e.key === "Enter") renderFeed(e.target.value);
+        });
+
+        // Init
+        renderFeed("");
+        renderArticles();
+        renderSpecialists();
+
+        // ====================== كشف جلسة المختص وفتح الصلاحيات ======================
+        function initSpecialistSession() {
+            // قراءة البيانات من sessionStorage أو URL params
+            let user = null;
+            const stored = sessionStorage.getItem('currentUser');
+            if (stored) {
+                try { user = JSON.parse(stored); } catch(e) {}
+            }
+            // دعم القراءة من URL param أيضاً (للتجربة المباشرة)
+            if (!user) {
+                const params = new URLSearchParams(window.location.search);
+                const role = params.get('role');
+                const name = params.get('name');
+                if (role && name) {
+                    const roleLabels = { doctor: 'دكتور نفسي', therapist: 'معالج نفسي', coach: 'لايف كوتش' };
+                    user = { role, name: decodeURIComponent(name), dest: roleLabels[role] || '' };
+                }
+            }
+
+            if (!user) return; // زائر عادي — لا صلاحيات إضافية
+
+            // ===== تفعيل شريط الترحيب =====
+            const roleIcons = { doctor: '👨‍⚕️', therapist: '🧠', coach: '🌟' };
+            const roleLabels = { doctor: 'دكتور نفسي موثق', therapist: 'معالج نفسي موثق', coach: 'لايف كوتش معتمد' };
+
+            document.getElementById('specialistBar').style.display = 'block';
+            document.getElementById('specialistBarIcon').textContent = roleIcons[user.role] || '👤';
+            document.getElementById('specialistBarName').textContent = 'مرحباً، ' + user.name;
+            document.getElementById('specialistBarRole').textContent = roleLabels[user.role] || user.role;
+
+            // ===== فتح زر نشر المقال =====
+            const articleBtn = document.getElementById('publishArticleBtn');
+            articleBtn.disabled = false;
+            articleBtn.classList.add('unlocked');
+            articleBtn.textContent = '✍️ نشر مقال';
+            articleBtn.title = 'انشر مقالاً جديداً';
+            articleBtn.onclick = openArticleModal;
+
+            // ===== فتح زر إنشاء غرفة =====
+            const roomBtn = document.getElementById('createRoomBtn');
+            roomBtn.disabled = false;
+            roomBtn.classList.add('unlocked');
+            roomBtn.textContent = '➕ إنشاء غرفة جديدة';
+            roomBtn.onclick = openRoomModal;
+
+            // ===== إخفاء رسالة القفل وإظهار أزرار الدخول للغرف =====
+            const lockMsg = document.querySelector('.room-lock-msg');
+            if (lockMsg) lockMsg.style.display = 'none';
+            ['joinRoomBtn1','joinRoomBtn2','joinRoomBtn3'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'block';
+            });
+
+            // ===== تحديث اسم المستخدم في إنشاء المنشور =====
+            const avatarLabel = document.querySelector('.create-post-header span');
+            if (avatarLabel) avatarLabel.textContent = 'ما الذي تريد مشاركته اليوم، ' + user.name + '؟';
+            const avatar = document.querySelector('.user-avatar-small');
+            if (avatar) avatar.textContent = roleIcons[user.role] || '😊';
+
+            // حفظ اسم المختص لاستخدامه في المنشورات
+            window._specialistName = user.name;
+            window._specialistRole = user.role;
+        }
+
+        // ===== دوال نوافذ المقال والغرفة =====
+        function openArticleModal() {
+            document.getElementById('articleModal').classList.add('show');
+        }
+        function closeArticleModal() {
+            document.getElementById('articleModal').classList.remove('show');
+            document.getElementById('articleTitle').value = '';
+            document.getElementById('articleExcerpt').value = '';
+            document.getElementById('articleModalError').style.display = 'none';
+        }
+
+        function submitArticle() {
+            const title   = document.getElementById('articleTitle').value.trim();
+            const excerpt = document.getElementById('articleExcerpt').value.trim();
+            const errEl   = document.getElementById('articleModalError');
+
+            if (!title || !excerpt) {
+                errEl.textContent = '⚠️ يرجى ملء عنوان المقال والملخص';
+                errEl.style.display = 'block';
+                return;
+            }
+            errEl.style.display = 'none';
+
+            // إضافة المقال للقائمة
+            const today = new Date().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
+            articles.unshift({
+                id: articles.length + 1,
+                title,
+                author: window._specialistName || 'مختص',
+                date: today,
+                excerpt,
+                reads: 0
+            });
+            renderArticles();
+            closeArticleModal();
+
+            // رسالة نجاح مؤقتة
+            const btn = document.getElementById('publishArticleBtn');
+            const orig = btn.textContent;
+            btn.textContent = '✅ نُشر!';
+            setTimeout(() => { btn.textContent = orig; }, 2000);
+        }
+
+        function openRoomModal() {
+            document.getElementById('roomModal').classList.add('show');
+        }
+        function closeRoomModal() {
+            document.getElementById('roomModal').classList.remove('show');
+            document.getElementById('roomName').value = '';
+        }
+
+        function createRoom(type) {
+            const name = document.getElementById('roomName').value.trim();
+            if (!name) {
+                document.getElementById('roomName').style.borderColor = 'var(--coral)';
+                document.getElementById('roomName').placeholder = '⚠️ أدخل اسم الغرفة...';
+                return;
+            }
+            const typeLabel = type === 'voice' ? '🎙️' : '📹';
+            const panel = document.querySelector('.rooms-panel');
+            const lockMsg = panel.querySelector('.room-lock-msg');
+            const newRoom = document.createElement('div');
+            newRoom.className = 'room-item';
+            newRoom.style.animation = 'fadeUp 0.4s ease both';
+            newRoom.innerHTML = `
+                <div class="room-info">
+                    <div class="room-name">${typeLabel} ${name}</div>
+                    <div class="room-host">يستضيفها: ${window._specialistName || 'مختص'}</div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <span class="badge-live">مباشر</span>
+                    <span class="badge-specialist">مختص</span>
+                    <button onclick="openRoomChat('${name}','${type}')"
+                        style="background:var(--g-main);border:none;border-radius:12px;padding:4px 12px;color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;">
+                        دخول ▶
+                    </button>
+                </div>
+            `;
+            panel.insertBefore(newRoom, lockMsg || document.getElementById('createRoomBtn'));
+            closeRoomModal();
+
+            const btn = document.getElementById('createRoomBtn');
+            btn.textContent = '✅ تم إنشاء الغرفة!';
+            setTimeout(() => { btn.textContent = '➕ إنشاء غرفة جديدة'; }, 2000);
+
+            // فتح الغرفة مباشرة
+            setTimeout(() => openRoomChat(name, type), 300);
+        }
+
+        function logoutSpecialist() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = window.location.pathname; // إعادة تحميل بدون params
+        }
+
+        // تشغيل فحص الجلسة
+        initSpecialistSession();
+    </script>
+    <script>
+        // =================== متغيرات الغرفة ===================
+        let currentRoom = null;
+        let localStream = null;
+        let myMicMuted  = false;
+        let myCamOff    = false;
+
+        // بيانات المشاركين التجريبيين
+        const demoParticipants = [
+            { id: 'p1', name: 'سارة محمد',   role: 'مستفيد',  emoji: '🙋‍♀️', muted: false },
+            { id: 'p2', name: 'خالد أحمد',   role: 'مستفيد',  emoji: '🙋‍♂️', muted: false },
+            { id: 'p3', name: 'نور الهدى',   role: 'مستفيد',  emoji: '🙋‍♀️', muted: true  },
+        ];
+
+        // =================== فتح الغرفة ===================
+        function openRoomChat(roomName, roomType) {
+            currentRoom = {
+                name: roomName,
+                type: roomType,
+                participants: [...demoParticipants]
+            };
+
+            const icon = roomType === 'video' ? '📹' : '🎙️';
+            document.getElementById('activeRoomIcon').textContent = icon;
+            document.getElementById('activeRoomName').textContent = roomName;
+            document.getElementById('activeRoomType').textContent = roomType === 'video' ? 'غرفة مرئية' : 'غرفة صوتية';
+            document.getElementById('localNameLabel').textContent = window._specialistName || 'المضيف';
+            document.getElementById('localAvatarIcon').textContent =
+                (window._specialistRole === 'doctor') ? '👨‍⚕️' :
+                (window._specialistRole === 'coach')  ? '🌟' : '🧠';
+
+            updateParticipantsUI();
+            buildRemoteTiles();
+            updateParticipantCount();
+            
+
+            // طلب الميديا
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                const constraints = roomType === 'video'
+                    ? { audio: true, video: true }
+                    : { audio: true, video: false };
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then(stream => {
+                        localStream = stream;
+                        const vid = document.getElementById('localVideo');
+                        vid.srcObject = stream;
+                        document.getElementById('localVideoPlaceholder').style.display =
+                            (roomType === 'video') ? 'none' : 'flex';
+                        document.getElementById('localMicStatus').textContent = '🎤 مفتوح';
+                    })
+                    .catch(() => {
+                        addRoomMessage('النظام', '⚠️ لم يتمكن من الوصول للكاميرا/الميكروفون — وضع محاكاة', 'system');
+                    });
+            }
+
+            addRoomMessage('النظام', `🎙️ فتحت جلسة "${roomName}" — مرحباً بك كمضيف`, 'system');
+            document.getElementById('roomChatModal').style.display = 'flex';
+            document.getElementById('roomChatInput').addEventListener('keypress', e => {
+                if (e.key === 'Enter') sendRoomMessage();
+            });
+        }
+
+        // =================== كتم/رفع صوتي ===================
+        function toggleMyMic() {
+            myMicMuted = !myMicMuted;
+            if (localStream) {
+                localStream.getAudioTracks().forEach(t => t.enabled = !myMicMuted);
+            }
+            const btn = document.getElementById('btnToggleMic');
+            btn.textContent = myMicMuted ? '🎤 رفع كتم صوتي' : '🎤 كتم صوتي';
+            btn.style.background = myMicMuted ? '#dc2626' : 'var(--g-main)';
+            document.getElementById('localMicStatus').textContent = myMicMuted ? '🔇 مكتوم' : '🎤 مفتوح';
+        }
+
+        // =================== إيقاف/تشغيل كاميرتي ===================
+        function toggleMyCam() {
+            myCamOff = !myCamOff;
+            if (localStream) {
+                localStream.getVideoTracks().forEach(t => t.enabled = !myCamOff);
+            }
+            const btn = document.getElementById('btnToggleCam');
+            btn.textContent = myCamOff ? '📹 تشغيل الكاميرا' : '📹 إيقاف الكاميرا';
+            btn.style.background = myCamOff ? '#dc2626' : '#2563eb';
+            document.getElementById('localVideoPlaceholder').style.display = myCamOff ? 'flex' : 'none';
+        }
+
+        // =================== كتم الجميع ===================
+        function muteAll() {
+            if (!currentRoom) return;
+            currentRoom.participants.forEach(p => { p.muted = true; });
+            updateParticipantsUI();
+            buildRemoteTiles();
+            addRoomMessage('النظام', '🔇 تم كتم صوت جميع المشاركين', 'system');
+        }
+
+        // =================== رفع كتم الجميع ===================
+        function unmuteAll() {
+            if (!currentRoom) return;
+            currentRoom.participants.forEach(p => { p.muted = false; });
+            updateParticipantsUI();
+            buildRemoteTiles();
+            addRoomMessage('النظام', '🔊 تم رفع الكتم عن جميع المشاركين', 'system');
+        }
+
+        // =================== كتم مشارك معين ===================
+        function toggleParticipantMute(pid) {
+            if (!currentRoom) return;
+            const p = currentRoom.participants.find(x => x.id === pid);
+            if (!p) return;
+            p.muted = !p.muted;
+            updateParticipantsUI();
+            buildRemoteTiles();
+            addRoomMessage('النظام',
+                p.muted ? `🔇 تم كتم صوت ${p.name}` : `🔊 تم رفع الكتم عن ${p.name}`, 'system');
+        }
+
+        // =================== طرد مشارك ===================
+        function kickParticipant(pid) {
+            if (!currentRoom) return;
+            const p = currentRoom.participants.find(x => x.id === pid);
+            if (!p) return;
+            if (!confirm(`هل تريد طرد ${p.name} من الغرفة؟`)) return;
+            currentRoom.participants = currentRoom.participants.filter(x => x.id !== pid);
+            updateParticipantsUI();
+            buildRemoteTiles();
+            updateParticipantCount();
+            addRoomMessage('النظام', `🚫 تم طرد ${p.name} من الغرفة`, 'system');
+        }
+
+        // =================== تحديث UI المشاركين ===================
+        function updateParticipantsUI() {
+            const list = document.getElementById('participantsList');
+            if (!list || !currentRoom) return;
+            list.innerHTML = '';
+            currentRoom.participants.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'participant-card' + (p.muted ? ' participant-muted' : '');
+                card.innerHTML = `
+                    <div class="participant-info">
+                        <div class="participant-avatar-sm">${p.emoji}</div>
+                        <div>
+                            <div class="participant-name">${p.name}</div>
+                            <div class="participant-role">${p.role} ${p.muted ? '🔇' : '🎤'}</div>
+                        </div>
+                    </div>
+                    <div class="participant-controls">
+                        <button class="ctrl-btn ${p.muted ? 'ctrl-unmute' : 'ctrl-mute'}"
+                            onclick="toggleParticipantMute('${p.id}')">
+                            ${p.muted ? '🔊 رفع كتم' : '🔇 كتم'}
+                        </button>
+                        <button class="ctrl-btn ctrl-kick" onclick="kickParticipant('${p.id}')">🚫 طرد</button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // =================== بناء مربعات المشاركين (محاكاة) ===================
+        function buildRemoteTiles() {
+            const grid = document.getElementById('remoteParticipantsGrid');
+            if (!grid || !currentRoom) return;
+            grid.innerHTML = '';
+            currentRoom.participants.forEach(p => {
+                const tile = document.createElement('div');
+                tile.className = 'remote-tile';
+                tile.innerHTML = `
+                    <div class="remote-tile-placeholder">
+                        <div style="font-size:28px;">${p.emoji}</div>
+                        <div style="font-size:11px;font-weight:700;">${p.name}</div>
+                        <div style="font-size:10px;color:#aaa;">${p.role}</div>
+                    </div>
+                    <div class="remote-tile-name">${p.name}</div>
+                    <div class="remote-tile-muted" id="muted_${p.id}" style="display:${p.muted ? 'block' : 'none'};">🔇</div>
+                `;
+                grid.appendChild(tile);
+            });
+        }
+
+        function updateParticipantCount() {
+            const count = (currentRoom?.participants?.length || 0) + 1;
+            document.getElementById('roomParticipantCount').textContent = `👥 ${count} مشارك`;
+        }
+
+        // =================== إرسال رسالة في الشات ===================
+        function sendRoomMessage() {
+            const input = document.getElementById('roomChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            const name = window._specialistName || 'المضيف';
+            addRoomMessage(name, text, 'host');
+            input.value = '';
+        }
+
+        function addRoomMessage(sender, text, type) {
+            const box = document.getElementById('roomChatMessages');
+            if (!box) return;
+            const div = document.createElement('div');
+            div.style.cssText = `margin-bottom:6px; padding:5px 8px; border-radius:10px; font-size:12px;
+                background:${type === 'system' ? '#f0fdf4' : type === 'host' ? '#eff6ff' : '#f9f9f9'};
+                color:${type === 'system' ? 'var(--g-mid)' : '#333'};
+                border-right:3px solid ${type === 'system' ? 'var(--g-light)' : type === 'host' ? '#2563eb' : '#ddd'};`;
+            div.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // =================== إغلاق الغرفة ===================
+        function closeRoomChat() {
+            if (localStream) {
+                localStream.getTracks().forEach(t => t.stop());
+                localStream = null;
+            }
+            const vid = document.getElementById('localVideo');
+            if (vid) vid.srcObject = null;
+            document.getElementById('roomChatModal').style.display = 'none';
+            document.getElementById('roomChatMessages').innerHTML = '';
+            currentRoom = null;
+            myMicMuted = false;
+            myCamOff   = false;
+        }
+
+        // =================== صفحة المقال الكاملة ===================
+        function openArticleView(article) {
+            const page = document.getElementById('articleViewPage');
+            const content = document.getElementById('articleViewContent');
+
+            // توليد محتوى مقال كامل من المعطيات
+            const bodyParagraphs = generateArticleBody(article);
+
+            content.innerHTML = `
+                <h1 class="article-view-title">${article.title}</h1>
+                <div class="article-view-meta">
+                    <div class="article-view-author">
+                        <div class="article-view-author-avatar">👨‍⚕️</div>
+                        <div>
+                            <div class="article-view-author-name">${article.author}</div>
+                            <div class="article-view-author-role">مختص نفسي معتمد • Feelix</div>
+                        </div>
+                    </div>
+                    <span class="article-view-date">📅 ${article.date}</span>
+                    <span class="article-view-reads">👁️ ${article.reads.toLocaleString('ar-EG')} قراءة</span>
+                </div>
+                <div class="article-view-divider"></div>
+                <div class="article-view-excerpt-big">${article.excerpt}</div>
+                <div class="article-view-body">${bodyParagraphs}</div>
+                <div style="margin-top:3rem; padding:1.5rem; background:var(--g-wash); border-radius:20px; text-align:center;">
+                    <div style="font-size:14px; font-weight:700; color:var(--g-deep); margin-bottom:8px;">هل وجدت هذا المقال مفيداً؟</div>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        <button onclick="this.textContent='❤️ شكراً!'; this.style.background='var(--coral)'; this.disabled=true;" style="background:var(--g-main); border:none; border-radius:20px; padding:8px 20px; color:white; font-size:14px; font-weight:700; cursor:pointer; font-family:'Cairo',sans-serif; transition:all 0.2s;">👍 مفيد جداً</button>
+                        <button onclick="closeArticleView()" style="background:white; border:2px solid var(--g-pale); border-radius:20px; padding:8px 20px; color:var(--g-deep); font-size:14px; font-weight:700; cursor:pointer; font-family:'Cairo',sans-serif;">← العودة</button>
+                    </div>
+                </div>
+            `;
+            page.style.display = 'block';
+            page.scrollTop = 0;
+            renderArticles(); // تحديث عداد القراءات في القائمة
+        }
+
+        function closeArticleView() {
+            document.getElementById('articleViewPage').style.display = 'none';
+        }
+
+        // توليد محتوى المقال (محاكاة ذكية بناءً على الموضوع)
+        function generateArticleBody(article) {
+            const intro = `<p>في عالمنا اليوم المليء بالضغوط والتحديات اليومية، أصبح الاهتمام بالصحة النفسية ضرورة لا رفاهية. يُقدم هذا المقال نظرة متعمقة حول <strong>${article.title}</strong>، مستنداً إلى أحدث الأبحاث والدراسات العلمية في مجال علم النفس.</p>`;
+
+            const section1 = `<p><strong>📌 ما الذي نعنيه تحديداً؟</strong><br>${article.excerpt} إن فهم هذا الموضوع بعمق يساعدنا على بناء استراتيجيات فعّالة للتعامل مع التحديات النفسية اليومية التي نواجهها جميعاً.</p>`;
+
+            const section2 = `<p><strong>🔬 ما تقوله الأبحاث العلمية</strong><br>تشير الدراسات الحديثة المنشورة في المجلات النفسية المحكّمة إلى أن ما يزيد عن 65٪ من الناس يواجهون تحديات مشابهة في مرحلة ما من حياتهم. والخبر الجيد هو أن هناك أدوات وتقنيات مثبتة علمياً يمكن الاعتماد عليها للتغلب على هذه التحديات.</p>`;
+
+            const section3 = `<p><strong>💡 الخطوات العملية للتطبيق</strong><br>الخطوة الأولى تبدأ دائماً بالوعي الذاتي — معرفة ما تشعر به وفهم المحفزات التي تؤثر عليك. الخطوة الثانية هي بناء روتين يومي صحي يشمل النوم الكافي، والتغذية السليمة، وممارسة النشاط البدني. أما الخطوة الثالثة فهي الاستعانة بالمختصين عند الحاجة، دون خجل أو تردد.</p>`;
+
+            const section4 = `<p><strong>🌱 رسالة الختام</strong><br>تذكر دائماً أن طلب المساعدة علامة قوة وليس ضعفاً. في <strong>Feelix</strong> نؤمن بأن كل شخص يستحق الدعم النفسي في بيئة آمنة ومحترمة. إن رحلتك نحو الصحة النفسية هي أهم استثمار يمكنك القيام به.</p>`;
+
+            return intro + section1 + section2 + section3 + section4;
+        }
+    </script>
+    <script>
+        // نظام الغرف المتقدم مع التحكم في الوصول
+class RoomManager {
+    constructor() {
+        this.rooms = new Map();
+        this.participants = new Map();
+        this.userRoles = new Map(); // حفظ أدوار المستخدمين
+        this.allowedUsers = new Map(); // قائمة المستخدمين المسموح لهم
+    }
+
+    // تعريف الأدوار
+    setUserRole(userId, role) {
+        const validRoles = ['doctor', 'specialist', 'life_coach', 'patient', 'guest'];
+        if (validRoles.includes(role)) {
+            this.userRoles.set(userId, role);
+            return true;
+        }
+        return false;
+    }
+
+    // إنشاء غرفة مفتوحة للجميع
+    createPublicRoom(roomId, hostId) {
+        if (!this.rooms.has(roomId)) {
+            this.rooms.set(roomId, {
+                id: roomId,
+                host: hostId,
+                type: 'public',
+                status: 'open',
+                allowedUsers: [], // فارغة = مفتوحة للجميع
+                participants: new Set([hostId]),
+                createdAt: Date.now()
+            });
+            this.participants.set(hostId, roomId);
+            return true;
+        }
+        return false;
+    }
+
+    // إنشاء غرفة خاصة (محددة الأشخاص)
+    createPrivateRoom(roomId, hostId, allowedUserIds = []) {
+        if (!this.rooms.has(roomId)) {
+            this.rooms.set(roomId, {
+                id: roomId,
+                host: hostId,
+                type: 'private',
+                status: 'waiting', // تنتظر الموافقة
+                allowedUsers: new Set(allowedUserIds),
+                participants: new Set(),
+                createdAt: Date.now()
+            });
+            return true;
+        }
+        return false;
+    }
+
+    // فحص صلاحية المستخدم
+    hasAccessPermission(userId) {
+        const role = this.userRoles.get(userId);
+        return ['doctor', 'specialist', 'life_coach'].includes(role);
+    }
+
+    // السماح/منع شخص معين
+    toggleUserAccess(roomId, targetUserId, moderatorId) {
+        if (!this.hasAccessPermission(moderatorId)) return false;
+        
+        const room = this.rooms.get(roomId);
+        if (!room) return false;
+
+        if (room.allowedUsers.has(targetUserId)) {
+            room.allowedUsers.delete(targetUserId);
+            // إخراج الشخص إذا كان موجود
+            room.participants.delete(targetUserId);
+            this.participants.delete(targetUserId);
+        } else {
+            room.allowedUsers.add(targetUserId);
+        }
+        return true;
+    }
+
+    // فتح الغرفة الخاصة (يحولها لمغلقة)
+    openPrivateRoom(roomId, hostId) {
+        const room = this.rooms.get(roomId);
+        if (!room || room.host !== hostId || !this.hasAccessPermission(hostId)) {
+            return false;
+        }
+
+        room.status = 'open';
+        // إضافة المستخدمين المسموح لهم تلقائياً
+        room.allowedUsers.forEach(userId => {
+            if (!room.participants.has(userId)) {
+                room.participants.add(userId);
+                this.participants.set(userId, roomId);
+            }
+        });
+        return true;
+    }
+
+    // محاولة الدخول للغرفة
+    joinRoom(userId, roomId) {
+        const room = this.rooms.get(roomId);
+        if (!room) return { success: false, reason: 'غرفة غير موجودة' };
+
+        // غرفة عامة - أي شخص يدخل
+        if (room.type === 'public' && room.status === 'open') {
+            room.participants.add(userId);
+            this.participants.set(userId, roomId);
+            return { success: true, type: 'public' };
+        }
+
+        // غرفة خاصة - فحص الصلاحيات
+        if (room.type === 'private') {
+            // المضيف يدخل دائماً
+            if (userId === room.host) {
+                room.participants.add(userId);
+                this.participants.set(userId, roomId);
+                return { success: true, type: 'host' };
+            }
+
+            // المستخدمون المسموح لهم فقط
+            if (room.status === 'open' && room.allowedUsers.has(userId)) {
+                room.participants.add(userId);
+                this.participants.set(userId, roomId);
+                return { success: true, type: 'allowed' };
+            }
+
+            // غرفة مغلقة - لا يدخل أحد آخر
+            if (room.status === 'open') {
+                return { success: false, reason: 'الغرفة خاصة ومغلقة' };
+            }
+
+            return { success: false, reason: 'الغرفة تنتظر الفتح' };
+        }
+
+        return { success: false, reason: 'نوع غرفة غير مدعوم' };
+    }
+
+    // مغادرة الغرفة
+    leaveRoom(userId) {
+        const roomId = this.participants.get(userId);
+        if (roomId) {
+            const room = this.rooms.get(roomId);
+            if (room) {
+                room.participants.delete(userId);
+            }
+            this.participants.delete(userId);
+            return true;
+        }
+        return false;
+    }
+
+    // إغلاق الغرفة
+    closeRoom(roomId, hostId) {
+        const room = this.rooms.get(roomId);
+        if (!room || room.host !== hostId) return false;
+
+        room.status = 'closed';
+        // إخراج الجميع
+        room.participants.forEach(userId => {
+            this.participants.delete(userId);
+        });
+        room.participants.clear();
+
+        return true;
+    }
+
+    // الحصول على معلومات الغرفة
+    getRoomInfo(roomId) {
+        const room = this.rooms.get(roomId);
+        if (!room) return null;
+
+        return {
+            ...room,
+            participantCount: room.participants.size,
+            isAccessible: room.status === 'open',
+            allowedCount: room.allowedUsers.size
+        };
+    }
+
+    // قائمة الغرف المتاحة
+    getAvailableRooms() {
+        return Array.from(this.rooms.values())
+            .filter(room => room.status === 'open')
+            .map(room => ({
+                id: room.id,
+                type: room.type,
+                participants: room.participants.size,
+                host: room.host
+            }));
+    }
+}
+
+// استخدام النظام
+const roomManager = new RoomManager();
+
+// مثال الاستخدام
+console.log("=== إنشاء غرفة عامة ===");
+roomManager.setUserRole('user123', 'life_coach');
+roomManager.createPublicRoom('room_public_1', 'user123');
+
+// أي شخص يدخل
+roomManager.joinRoom('patient1', 'room_public_1');
+roomManager.joinRoom('guest456', 'room_public_1');
+
+console.log(roomManager.getRoomInfo('room_public_1'));
+
+console.log("\n=== إنشاء غرفة خاصة ===");
+roomManager.setUserRole('doctor789', 'doctor');
+roomManager.createPrivateRoom('room_private_1', 'doctor789', ['patient1', 'patient2']);
+
+console.log("\n=== السماح/منع مستخدمين ===");
+roomManager.toggleUserAccess('room_private_1', 'patient3', 'doctor789'); // إضافة
+roomManager.toggleUserAccess('room_private_1', 'guest999', 'doctor789'); // منع
+
+console.log("\n=== فتح الغرفة الخاصة ===");
+roomManager.openPrivateRoom('room_private_1', 'doctor789');
+
+// التحقق من الدخول
+console.log(roomManager.joinRoom('patient1', 'room_private_1'));  // نجح
+console.log(roomManager.joinRoom('patient3', 'room_private_1'));  // نجح
+console.log(roomManager.joinRoom('guest456', 'room_private_1')); // فشل
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feelix your calm companion</title>
+    <link rel="stylesheet" href="Specialized .css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Playfair+Display:wght@700&family=DM+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main-container">
+        <div class="card">
+            <div class="face">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="head">
+                    <div class="heart"></div>
+                    <div class="eyes">
+                        <div class="eye"></div>
+                        <div class="eye"></div>
+                    </div>
+                    <div class="smile"></div>
+                    <div class="blush left"></div>
+                    <div class="blush right"></div>
+                </div>
+            </div>
+            <div class="wordmark">feelix</div>
+            <div class="tagline">feelix your calm companion</div>
+            <div class="divider"></div>
+            <h2 style="color: var(--g-deep); margin-bottom: 10px; font-family: 'Cairo', sans-serif;">تسجيل الدخول</h2>
+
+            <!-- نموذج تسجيل الدخول -->
+            <div class="logni-row">
+                <input type="email" placeholder="البريد الإلكتروني" required>
+                <input type="password" placeholder="كلمة المرور" required>
+                <button type="button">دخول</button>
+                <div class="error-message"></div>
+            </div>
+
+            <!-- أزرار التواصل الاجتماعي -->
+            <div class="social-circles">
+                <a href="#" class="social-circle-link">
+                    <div class="social-circle google">
+                        <span class="social-icon">G</span>
+                        <span class="social-label">Google</span>
+                    </div>
+                </a>
+                <a href="#" class="social-circle-link">
+                    <div class="social-circle facebook">
+                        <span class="social-icon">f</span>
+                        <span class="social-label">Facebook</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ كود التوجيه التلقائي إلى Destination.html -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginBtn = document.querySelector('.logni-row button');
+            const inputs = document.querySelectorAll('.logni-row input');
+            const errorMsg = document.querySelector('.error-message');
+
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    let allFilled = true;
+                    inputs.forEach(input => {
+                        if (input.value.trim() === '') allFilled = false;
+                    });
+
+                    if (allFilled) {
+                        if (errorMsg) errorMsg.style.display = 'none';
+                        window.location.href = 'Destination.html';
+                    } else {
+                        if (errorMsg) {
+                            errorMsg.textContent = 'يرجى إدخال البريد الإلكتروني وكلمة المرور';
+                            errorMsg.style.display = 'block';
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
